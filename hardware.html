@@ -2,69 +2,571 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Misión Hardware</title>
+<title>Misión Hardware Pro</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background: #050505;
-  color: #00f7ff;
-  font-family: Arial;
+  margin: 0;
+  background:
+    radial-gradient(circle at top, #082b35 0%, #050505 45%, #000 100%);
+  color: #eaffff;
+  font-family: Arial, sans-serif;
   text-align: center;
 }
 
+.contenedor {
+  width: 90%;
+  max-width: 950px;
+  margin: 40px auto;
+  padding: 30px;
+  border: 2px solid #00f7ff;
+  border-radius: 20px;
+  background: rgba(0, 20, 25, 0.88);
+  box-shadow: 0 0 25px #00f7ff55;
+}
+
 h1 {
-  margin-top: 50px;
-  font-size: 38px;
+  color: #00f7ff;
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.subtitulo {
+  color: #9ffcff;
+  margin-bottom: 25px;
+}
+
+.panel {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+.caja {
+  border: 1px solid #00f7ff;
+  border-radius: 12px;
+  padding: 12px 20px;
+  background: rgba(0, 247, 255, 0.08);
+  min-width: 150px;
+  font-weight: bold;
+}
+
+.barra {
+  width: 100%;
+  height: 18px;
+  border: 1px solid #00f7ff;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 20px 0;
+  background: #001014;
+}
+
+.progreso {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00f7ff, #00ff99);
+  transition: 0.4s;
+}
+
+.tarjeta {
+  margin-top: 25px;
+  padding: 30px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #00f7ff77;
+}
+
+.pregunta {
+  font-size: 26px;
+  margin-bottom: 25px;
+  color: white;
+}
+
+.opciones {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
 }
 
 button {
-  margin: 12px;
-  padding: 15px 25px;
-  background: black;
-  color: #00f7ff;
+  padding: 18px;
+  font-size: 17px;
+  background: #020202;
   border: 2px solid #00f7ff;
+  color: #00f7ff;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 16px;
+  transition: 0.2s;
 }
 
 button:hover {
   background: #00f7ff;
   color: black;
+  transform: scale(1.03);
+}
+
+.correcta {
+  background: #00ff99 !important;
+  color: black !important;
+  border-color: #00ff99 !important;
+}
+
+.incorrecta {
+  background: #ff244f !important;
+  color: white !important;
+  border-color: #ff244f !important;
+}
+
+.mensaje {
+  min-height: 35px;
+  margin-top: 22px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.final {
+  display: none;
+}
+
+.volver {
+  margin-top: 25px;
+  border-color: #ffffff;
+  color: white;
+}
+
+.volver:hover {
+  background: white;
+  color: black;
+}
+
+@media (max-width: 700px) {
+  .opciones {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1>🔧 MISIÓN HARDWARE</h1>
+<div class="contenedor">
 
-<h2 id="score">Puntos: 0</h2>
+  <h1>🔧 HARDWARE ARENA</h1>
+  <p class="subtitulo">Responde 5 retos aleatorios. Solo tienes 2 chances.</p>
 
-<p>Selecciona el componente clave para mejorar el rendimiento gráfico de una PC:</p>
+  <div class="panel">
+    <div class="caja" id="score">Puntos: 0</div>
+    <div class="caja" id="vidas">Chances: 2</div>
+    <div class="caja" id="contador">Pregunta: 1/5</div>
+  </div>
 
-<button onclick="correcto()">Tarjeta gráfica GPU</button>
-<button onclick="error()">Fuente genérica</button>
-<button onclick="error()">Mouse RGB</button>
+  <div class="barra">
+    <div class="progreso" id="progreso"></div>
+  </div>
 
-<br><br>
+  <div class="tarjeta" id="juego">
+    <div class="pregunta" id="pregunta"></div>
 
-<button onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+    <div class="opciones">
+      <button id="op0" onclick="responder(0)"></button>
+      <button id="op1" onclick="responder(1)"></button>
+      <button id="op2" onclick="responder(2)"></button>
+      <button id="op3" onclick="responder(3)"></button>
+    </div>
+
+    <div class="mensaje" id="mensaje"></div>
+  </div>
+
+  <div class="tarjeta final" id="final">
+    <h2 id="tituloFinal"></h2>
+    <p id="textoFinal"></p>
+    <button onclick="reiniciar()">🔁 Jugar otra vez</button>
+    <button class="volver" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+  </div>
+
+  <br>
+  <button class="volver" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+
+</div>
 
 <script>
-let puntos = localStorage.getItem("puntos") || 0;
-document.getElementById("score").innerText = "Puntos: " + puntos;
+let puntos = parseInt(localStorage.getItem("puntos")) || 0;
+let chances = 2;
+let preguntaActual = 0;
+let totalPreguntas = 5;
+let preguntasPartida = [];
 
-function correcto(){
-  puntos = parseInt(puntos) + 100;
-  localStorage.setItem("puntos", puntos);
-  document.getElementById("score").innerText = "Puntos: " + puntos;
+const bancoPreguntas = [
+  {
+    pregunta: "¿Qué componente se encarga principalmente del procesamiento gráfico?",
+    opciones: ["GPU", "RAM", "SSD", "Fuente de poder"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente guarda datos de forma permanente?",
+    opciones: ["RAM", "SSD", "CPU", "Disipador"],
+    correcta: 1
+  },
+  {
+    pregunta: "¿Qué pieza es considerada el cerebro de la computadora?",
+    opciones: ["CPU", "Monitor", "Gabinete", "Teclado"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué memoria se borra al apagar la computadora?",
+    opciones: ["SSD", "RAM", "HDD", "USB"],
+    correcta: 1
+  },
+  {
+    pregunta: "¿Qué componente entrega energía a toda la PC?",
+    opciones: ["Fuente de poder", "Tarjeta de red", "Mouse", "Ventilador RGB"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa SSD?",
+    opciones: ["Solid State Drive", "Super System Data", "Software Storage Device", "Simple Speed Disk"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente ayuda a mantener baja la temperatura del procesador?",
+    opciones: ["Disipador", "Mouse", "Monitor", "Cable HDMI"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué pieza conecta todos los componentes principales?",
+    opciones: ["Placa madre", "Bocinas", "Webcam", "Impresora"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente mejora la carga rápida de programas y sistema?",
+    opciones: ["SSD", "Fuente genérica", "Mousepad", "Cámara"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Cuál es mejor para multitarea: 4GB RAM o 16GB RAM?",
+    opciones: ["16GB RAM", "4GB RAM", "Da igual", "Ninguna"],
+    correcta: 0
+  },
+
+  {
+    pregunta: "¿Qué puerto se usa comúnmente para conectar un monitor moderno?",
+    opciones: ["HDMI", "RJ45", "USB-A", "Audio Jack"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente permite conexión a internet por cable?",
+    opciones: ["Tarjeta de red", "GPU", "RAM", "Disco duro"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es mejor para juegos: GPU dedicada o gráficos integrados básicos?",
+    opciones: ["GPU dedicada", "Gráficos integrados básicos", "Ninguno", "Impresora"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente almacena instrucciones temporales mientras trabajas?",
+    opciones: ["RAM", "SSD", "Gabinete", "Monitor"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué pasa si una fuente de poder es de mala calidad?",
+    opciones: ["Puede dañar componentes", "Aumenta FPS", "Mejora internet", "Enfría la PC"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente suele tener núcleos e hilos?",
+    opciones: ["CPU", "Mouse", "Cable SATA", "Gabinete"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente se mide comúnmente en GB para capacidad temporal?",
+    opciones: ["RAM", "Fuente", "CPU", "Ventilador"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente se mide comúnmente en watts?",
+    opciones: ["Fuente de poder", "RAM", "SSD", "Mouse"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente puede ser SATA o NVMe?",
+    opciones: ["SSD", "Teclado", "GPU", "Monitor"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué tipo de almacenamiento suele ser más rápido?",
+    opciones: ["NVMe", "HDD viejo", "DVD", "Diskette"],
+    correcta: 0
+  },
+
+  {
+    pregunta: "¿Qué componente da imagen al monitor?",
+    opciones: ["GPU", "RAM", "Fuente", "Disipador"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente físico protege y organiza las piezas?",
+    opciones: ["Gabinete", "SSD", "RAM", "CPU"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué ayuda a mejorar el flujo de aire dentro del gabinete?",
+    opciones: ["Ventiladores", "Mouse", "Bocinas", "USB"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa CPU?",
+    opciones: ["Central Processing Unit", "Computer Power USB", "Control Program Unit", "Core Panel Utility"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa RAM?",
+    opciones: ["Random Access Memory", "Rapid Audio Module", "Real Active Machine", "Remote Access Monitor"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué puede pasar si una PC no tiene buena ventilación?",
+    opciones: ["Sobrecalentamiento", "Más almacenamiento", "Mejor sonido", "Más internet"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente se instala normalmente en el socket de la motherboard?",
+    opciones: ["CPU", "Mouse", "Monitor", "Teclado"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente puede tener memoria VRAM?",
+    opciones: ["GPU", "Fuente", "SSD", "Gabinete"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es la pasta térmica?",
+    opciones: ["Material que ayuda a transferir calor", "Un tipo de cable", "Un programa", "Una memoria"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente permite conectar periféricos como mouse y teclado?",
+    opciones: ["Puertos USB", "Socket CPU", "Ranura RAM", "M.2"],
+    correcta: 0
+  },
+
+  {
+    pregunta: "¿Qué pieza se conecta normalmente en ranuras DIMM?",
+    opciones: ["RAM", "GPU", "CPU", "Fuente"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué pieza se conecta normalmente en PCIe x16?",
+    opciones: ["GPU", "RAM", "SSD SATA", "Bocinas"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué unidad suele girar físicamente por dentro?",
+    opciones: ["HDD", "SSD", "RAM", "CPU"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué opción es mejor para arranque rápido del sistema?",
+    opciones: ["SSD", "HDD viejo", "DVD", "USB 2.0 dañado"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente necesita buena refrigeración para evitar thermal throttling?",
+    opciones: ["CPU", "Mouse", "Teclado", "Bocinas"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa que una fuente sea certificada 80 Plus?",
+    opciones: ["Tiene mejor eficiencia energética", "Tiene más RGB", "Tiene más memoria", "Da más FPS siempre"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente afecta mucho el rendimiento en edición de video?",
+    opciones: ["CPU y RAM", "Mousepad", "Bocinas", "Cable de corriente"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente afecta mucho el rendimiento en videojuegos?",
+    opciones: ["GPU", "Webcam", "Impresora", "Micrófono"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa BIOS/UEFI?",
+    opciones: ["Sistema inicial que configura el hardware", "Una aplicación de dibujo", "Un tipo de RAM", "Una red social"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente permite conexión inalámbrica WiFi si la placa no lo trae?",
+    opciones: ["Adaptador WiFi", "SSD", "GPU", "Disipador"],
+    correcta: 0
+  },
+
+  {
+    pregunta: "¿Qué debes revisar antes de comprar una RAM?",
+    opciones: ["Compatibilidad DDR y frecuencia", "Color del mouse", "Tamaño del monitor", "Marca del teclado"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué debes revisar antes de comprar una CPU?",
+    opciones: ["Socket compatible con la motherboard", "Color del gabinete", "Tipo de bocinas", "Longitud del mousepad"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué debes revisar antes de comprar una GPU grande?",
+    opciones: ["Espacio del gabinete y watts de la fuente", "Color del escritorio", "Idioma del teclado", "Tamaño del mouse"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué ayuda más a una laptop vieja para sentirse rápida?",
+    opciones: ["Cambiar HDD por SSD", "Poner stickers", "Cambiar fondo de pantalla", "Subir brillo"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente puede limitar a otro y causar cuello de botella?",
+    opciones: ["CPU o GPU desbalanceados", "Mouse RGB", "Tapete", "Bocinas"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa MHz en RAM?",
+    opciones: ["Frecuencia o velocidad de trabajo", "Peso físico", "Color", "Tamaño de pantalla"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es un periférico?",
+    opciones: ["Dispositivo externo como mouse o teclado", "Un tipo de CPU", "Una memoria interna", "Una fuente"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué componente convierte corriente AC a DC para la PC?",
+    opciones: ["Fuente de poder", "RAM", "SSD", "Monitor"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es mejor para guardar muchos archivos pesados barato?",
+    opciones: ["HDD de gran capacidad", "RAM", "CPU", "Disipador"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es mejor para sistema operativo y programas?",
+    opciones: ["SSD", "HDD lento", "DVD", "Memoria RAM"],
+    correcta: 0
+  }
+];
+
+function mezclar(array) {
+  return array.sort(() => Math.random() - 0.5);
 }
 
-function error(){
-  puntos = parseInt(puntos) - 20;
+function iniciarJuego() {
+  preguntasPartida = mezclar([...bancoPreguntas]).slice(0, totalPreguntas);
+  preguntaActual = 0;
+  chances = 2;
+
+  document.getElementById("juego").style.display = "block";
+  document.getElementById("final").style.display = "none";
+
+  cargarPregunta();
+}
+
+function cargarPregunta() {
+  if (preguntaActual >= totalPreguntas) {
+    terminarJuego(true);
+    return;
+  }
+
+  let p = preguntasPartida[preguntaActual];
+
+  document.getElementById("pregunta").innerText = p.pregunta;
+  document.getElementById("contador").innerText = "Pregunta: " + (preguntaActual + 1) + "/" + totalPreguntas;
+  document.getElementById("vidas").innerText = "Chances: " + chances;
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+  document.getElementById("progreso").style.width = ((preguntaActual) / totalPreguntas * 100) + "%";
+  document.getElementById("mensaje").innerText = "";
+
+  let opcionesMezcladas = p.opciones.map((texto, index) => {
+    return { texto: texto, esCorrecta: index === p.correcta };
+  });
+
+  opcionesMezcladas = mezclar(opcionesMezcladas);
+
+  for (let i = 0; i < 4; i++) {
+    let boton = document.getElementById("op" + i);
+    boton.innerText = opcionesMezcladas[i].texto;
+    boton.dataset.correcta = opcionesMezcladas[i].esCorrecta;
+    boton.disabled = false;
+    boton.className = "";
+  }
+}
+
+function responder(num) {
+  let boton = document.getElementById("op" + num);
+  let esCorrecta = boton.dataset.correcta === "true";
+
+  desactivarBotones();
+
+  if (esCorrecta) {
+    puntos += 100;
+    boton.classList.add("correcta");
+    document.getElementById("mensaje").innerText = "✅ Correcto: +100 puntos";
+    preguntaActual++;
+  } else {
+    chances--;
+    puntos -= 30;
+    boton.classList.add("incorrecta");
+    document.getElementById("mensaje").innerText = "❌ Incorrecto: -30 puntos";
+
+    if (chances <= 0) {
+      localStorage.setItem("puntos", puntos);
+      setTimeout(() => terminarJuego(false), 900);
+      return;
+    } else {
+      preguntaActual++;
+    }
+  }
+
   localStorage.setItem("puntos", puntos);
   document.getElementById("score").innerText = "Puntos: " + puntos;
+  document.getElementById("vidas").innerText = "Chances: " + chances;
+  document.getElementById("progreso").style.width = ((preguntaActual) / totalPreguntas * 100) + "%";
+
+  setTimeout(cargarPregunta, 1000);
 }
+
+function desactivarBotones() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById("op" + i).disabled = true;
+  }
+}
+
+function terminarJuego(completado) {
+  document.getElementById("juego").style.display = "none";
+  document.getElementById("final").style.display = "block";
+  document.getElementById("progreso").style.width = "100%";
+
+  if (completado) {
+    document.getElementById("tituloFinal").innerText = "🏆 Misión completada";
+    document.getElementById("textoFinal").innerText = "Terminaste los 5 retos de hardware. Puntaje actual: " + puntos;
+  } else {
+    document.getElementById("tituloFinal").innerText = "💥 Sistema fallido";
+    document.getElementById("textoFinal").innerText = "Te quedaste sin chances. Puntaje actual: " + puntos;
+  }
+}
+
+function reiniciar() {
+  iniciarJuego();
+}
+
+iniciarJuego();
 </script>
 
 </body>
