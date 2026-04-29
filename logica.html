@@ -2,195 +2,523 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Lógica Arena</title>
+<title>Lógica Hacker Arena</title>
 
 <style>
-body {
-  margin: 0;
-  background: linear-gradient(135deg,#0a0020,#000,#1a0033);
-  color: white;
-  font-family: Arial;
-  text-align: center;
+*{box-sizing:border-box}
+
+:root{
+  --main:#a855f7;
+  --accent:#00eaff;
+  --danger:#ff244f;
 }
 
-.contenedor {
-  width: 90%;
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 25px;
-  border: 1px solid #a855f7;
-  border-radius: 18px;
-  box-shadow: 0 0 25px #a855f766;
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#1b0730 0%,#050208 50%,#000 100%);
+  color:white;
+  font-family:Consolas, Arial, sans-serif;
+  overflow-x:hidden;
 }
 
-h1 {
-  color: #a855f7;
-  font-size: 40px;
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(168,85,247,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(168,85,247,.07) 1px,transparent 1px);
+  background-size:38px 38px;
+  animation:gridMove 13s linear infinite;
+  pointer-events:none;
 }
 
-.panel {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px 0;
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.035) 0px,
+    rgba(255,255,255,.035) 1px,
+    transparent 3px,
+    transparent 7px
+  );
+  opacity:.28;
+  pointer-events:none;
 }
 
-.caja {
-  border: 1px solid #a855f7;
-  padding: 10px 20px;
-  border-radius: 10px;
+@keyframes gridMove{
+  from{background-position:0 0}
+  to{background-position:80px 80px}
 }
 
-.barra {
-  height: 12px;
-  background: #111;
-  border-radius: 999px;
-  overflow: hidden;
+.container{
+  width:94%;
+  max-width:1180px;
+  margin:25px auto;
+  padding:26px;
+  border:1px solid var(--main);
+  border-radius:22px;
+  background:rgba(12,0,22,.9);
+  box-shadow:0 0 38px rgba(168,85,247,.35);
+  position:relative;
 }
 
-.progreso {
-  height: 100%;
-  background: linear-gradient(90deg,#a855f7,#00eaff);
+.header{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:center;
+  flex-wrap:wrap;
+  border-bottom:1px solid rgba(168,85,247,.45);
+  padding-bottom:18px;
 }
 
-.tarjeta {
-  margin-top: 30px;
+h1{
+  margin:0;
+  color:var(--main);
+  font-size:42px;
+  letter-spacing:2px;
+  text-shadow:0 0 18px var(--main);
 }
 
-button {
-  margin: 10px;
-  padding: 14px 20px;
-  background: black;
-  border: 1px solid #a855f7;
-  color: #a855f7;
-  cursor: pointer;
-  border-radius: 10px;
+.sub{
+  color:#e7d1ff;
+  margin-top:8px;
 }
 
-button:hover {
-  background: #a855f7;
-  color: black;
+.tag{
+  border:1px solid var(--danger);
+  color:var(--danger);
+  padding:12px 18px;
+  border-radius:999px;
+  font-weight:bold;
+  animation:blink 1.2s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:.45}
+}
+
+.top{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin:22px 0;
+}
+
+.box{
+  padding:14px;
+  border:1px solid var(--main);
+  border-radius:14px;
+  background:rgba(168,85,247,.08);
+  text-align:center;
+  font-weight:bold;
+}
+
+.bar{
+  height:14px;
+  border:1px solid var(--main);
+  border-radius:999px;
+  overflow:hidden;
+  background:#020202;
+  margin-bottom:22px;
+}
+
+.fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--main),var(--accent));
+  transition:.35s;
+}
+
+.game{
+  display:grid;
+  grid-template-columns:.95fr 1.05fr;
+  gap:22px;
+}
+
+.terminal,.panel{
+  border:1px solid rgba(168,85,247,.65);
+  border-radius:18px;
+  background:rgba(255,255,255,.035);
+  overflow:hidden;
+}
+
+.terminalTop{
+  padding:12px 16px;
+  background:rgba(0,0,0,.68);
+  border-bottom:1px solid var(--main);
+  color:var(--main);
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.visual{
+  min-height:340px;
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.logicIcon{
+  font-size:76px;
+  margin-bottom:18px;
+  filter:drop-shadow(0 0 16px var(--main));
+  animation:float 2.8s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+.readout{
+  width:100%;
+  border:1px solid rgba(168,85,247,.5);
+  border-radius:14px;
+  padding:18px;
+  color:#f2ddff;
+  background:rgba(0,0,0,.35);
+  line-height:1.6;
+  font-size:22px;
+}
+
+.panel{
+  padding:24px;
+}
+
+.tipo{
+  color:var(--accent);
+  letter-spacing:2px;
+  font-size:14px;
+}
+
+.pregunta{
+  margin:18px 0;
+  font-size:24px;
+  color:white;
+}
+
+.opciones{
+  display:grid;
+  gap:13px;
+}
+
+button{
+  padding:15px;
+  border-radius:12px;
+  border:1px solid var(--main);
+  background:#020202;
+  color:var(--main);
+  cursor:pointer;
+  transition:.18s;
+  font-size:16px;
+  font-family:Consolas, Arial, sans-serif;
+}
+
+button:hover{
+  background:var(--main);
+  color:#000;
+  transform:translateY(-2px);
+  box-shadow:0 0 18px var(--main);
+}
+
+.correcto{
+  background:#00ff99!important;
+  color:black!important;
+  border-color:#00ff99!important;
+}
+
+.error{
+  background:#ff244f!important;
+  color:white!important;
+  border-color:#ff244f!important;
+}
+
+.msg{
+  min-height:38px;
+  margin-top:18px;
+  color:#ffdf7e;
+  font-weight:bold;
+}
+
+.final{
+  display:none;
+  text-align:center;
+  border:1px solid var(--main);
+  border-radius:18px;
+  padding:30px;
+  background:rgba(255,255,255,.04);
+}
+
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:22px;
+}
+
+.back{
+  border-color:white;
+  color:white;
+}
+
+.back:hover{
+  background:white;
+  color:black;
+  box-shadow:none;
+}
+
+.hackline{
+  color:var(--main);
+  font-size:14px;
+  margin-top:12px;
+  min-height:22px;
+}
+
+@media(max-width:850px){
+  .game{grid-template-columns:1fr}
+  .top{grid-template-columns:1fr}
+  h1{font-size:32px}
 }
 </style>
 </head>
 
 <body>
 
-<div class="contenedor">
+<div class="container">
 
-<h1>🧠 LÓGICA ARENA</h1>
-
-<div class="panel">
-  <div class="caja" id="score">Puntos: 0</div>
-  <div class="caja" id="vidas">Chances: 2</div>
-  <div class="caja" id="contador">1/5</div>
-</div>
-
-<div class="barra">
-  <div class="progreso" id="progreso"></div>
-</div>
-
-<div class="tarjeta">
-  <h2 id="pregunta"></h2>
-
-  <div>
-    <button onclick="responder(0)" id="op0"></button>
-    <button onclick="responder(1)" id="op1"></button>
-    <button onclick="responder(2)" id="op2"></button>
-    <button onclick="responder(3)" id="op3"></button>
+  <div class="header">
+    <div>
+      <h1>🧠 LÓGICA ARENA</h1>
+      <div class="sub">Terminal de razonamiento táctico | Secuencias, patrones y deducción</div>
+    </div>
+    <div class="tag">MENTAL CORE</div>
   </div>
 
-  <h3 id="mensaje"></h3>
-</div>
+  <div class="top">
+    <div class="box" id="score">Puntos: 0</div>
+    <div class="box" id="vidas">Vidas: 5 ❤️</div>
+    <div class="box" id="contador">Reto: 1/5</div>
+    <div class="box" id="estado">Estado: Analizando</div>
+  </div>
 
-<button onclick="window.location.href='index.html'">⬅ Volver</button>
+  <div class="bar">
+    <div class="fill" id="progreso"></div>
+  </div>
+
+  <div class="game" id="juego">
+
+    <div class="terminal">
+      <div class="terminalTop">
+        <span>● ● ● / logic_core.exe</span>
+        <span id="scan">SCAN...</span>
+      </div>
+
+      <div class="visual">
+        <div class="logicIcon" id="icono">🧠</div>
+        <div class="readout" id="readout">
+          Inicializando núcleo lógico...
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="tipo" id="tipo"></div>
+      <div class="pregunta" id="pregunta"></div>
+
+      <div class="opciones">
+        <button id="op0" onclick="responder(0)"></button>
+        <button id="op1" onclick="responder(1)"></button>
+        <button id="op2" onclick="responder(2)"></button>
+        <button id="op3" onclick="responder(3)"></button>
+      </div>
+
+      <div class="msg" id="mensaje"></div>
+      <div class="hackline" id="hackline">Escaneando patrones, secuencias y decisiones...</div>
+    </div>
+
+  </div>
+
+  <div class="final" id="final">
+    <h2 id="tituloFinal"></h2>
+    <p id="textoFinal"></p>
+
+    <div class="actions">
+      <button onclick="reiniciar()">🔁 Nuevo análisis</button>
+      <button class="back" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="back" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+  </div>
 
 </div>
 
 <script>
-
 let puntos = 0;
-let chances = 2;
+let vidas = 5;
 let actual = 0;
 let total = 5;
+let partida = [];
 
-let preguntas = [
-  {p:"¿Cuál sigue? 2,4,6,8...",o:["10","12","9","11"],c:0},
-  {p:"Si todos los gatos son mamíferos ¿qué es un gato?",o:["Mamífero","Reptil","Ave","Planta"],c:0},
-  {p:"Completa: A,B,C,_",o:["D","E","Z","1"],c:0},
-  {p:"Si 5x=10, x es:",o:["2","5","10","0"],c:0},
-  {p:"¿Cuál pesa más?",o:["1kg plumas","1kg hierro","Igual","Depende"],c:2},
+const bancoPreguntas = [
+  {tipo:"SECUENCIA",icono:"🔢",readout:"2 → 4 → 6 → 8 → ?",pregunta:"¿Qué número sigue?",opciones:["9","10","12","14"],correcta:1,color:"#a855f7"},
+  {tipo:"SECUENCIA",icono:"🔢",readout:"3 → 6 → 9 → 12 → ?",pregunta:"Detecta el patrón.",opciones:["14","15","16","18"],correcta:1,color:"#a855f7"},
+  {tipo:"SECUENCIA",icono:"🔢",readout:"1 → 1 → 2 → 3 → 5 → ?",pregunta:"¿Qué número completa la serie?",opciones:["6","7","8","9"],correcta:2,color:"#a855f7"},
+  {tipo:"SECUENCIA",icono:"🔢",readout:"100 → 90 → 80 → ?",pregunta:"¿Qué sigue?",opciones:["75","70","60","85"],correcta:1,color:"#a855f7"},
+  {tipo:"SECUENCIA",icono:"🔢",readout:"1 → 4 → 9 → 16 → ?",pregunta:"Completa la secuencia de cuadrados.",opciones:["20","25","30","36"],correcta:1,color:"#a855f7"},
 
-  {p:"Si hoy es lunes, en 3 días será:",o:["Jueves","Viernes","Miércoles","Martes"],c:0},
-  {p:"¿Qué número falta? 1,1,2,3,5,_",o:["8","6","7","9"],c:0},
-  {p:"¿Qué patrón sigue? 🔴🔵🔴🔵...",o:["🔴","🔵","⚫","⚪"],c:0},
-  {p:"Si A=1, B=2 ¿C?",o:["3","4","5","6"],c:0},
-  {p:"¿Qué no pertenece?",o:["Perro","Gato","Auto","Vaca"],c:2},
+  {tipo:"PATRÓN",icono:"🔺",readout:"▲ ● ▲ ● ▲ ?",pregunta:"¿Qué símbolo sigue?",opciones:["▲","●","■","◆"],correcta:1,color:"#00eaff"},
+  {tipo:"PATRÓN",icono:"🎯",readout:"🔴 🔵 🔴 🔵 🔴 ?",pregunta:"Completa el patrón.",opciones:["🔴","🔵","🟢","⚫"],correcta:1,color:"#00eaff"},
+  {tipo:"PATRÓN",icono:"⬛",readout:"⬛ ⬜ ⬛ ⬜ ⬛ ?",pregunta:"¿Cuál sigue?",opciones:["⬛","⬜","🟥","🟦"],correcta:1,color:"#00eaff"},
+  {tipo:"PATRÓN",icono:"🧩",readout:"A B A B A ?",pregunta:"Elige el elemento faltante.",opciones:["A","B","C","D"],correcta:1,color:"#00eaff"},
+  {tipo:"PATRÓN",icono:"⚙️",readout:"⚙️ 💻 ⚙️ 💻 ⚙️ ?",pregunta:"¿Qué sigue en la secuencia?",opciones:["🧠","💻","⚙️","🔐"],correcta:1,color:"#00eaff"},
 
-  {p:"¿Cuál es mayor?",o:["0.5","0.05","0.005","0.0005"],c:0},
-  {p:"¿Qué sigue? 3,6,9,12...",o:["15","14","16","18"],c:0},
-  {p:"Si 10-3=7, 7-2=?",o:["5","4","3","6"],c:0},
-  {p:"Completa: 1,4,9,16,_",o:["25","20","18","24"],c:0},
-  {p:"¿Qué figura sigue? ▲▲■■▲▲■■",o:["▲▲","■■","▲■","■■▲"],c:0},
+  {tipo:"DEDUCCIÓN",icono:"🕵️",readout:"Todos los gatos son mamíferos.<br>Un gato es...",pregunta:"¿Qué conclusión es correcta?",opciones:["Mamífero","Reptil","Ave","Planta"],correcta:0,color:"#00ff99"},
+  {tipo:"DEDUCCIÓN",icono:"⚖️",readout:"1 kg de plumas vs 1 kg de hierro",pregunta:"¿Cuál pesa más?",opciones:["Plumas","Hierro","Igual","Depende del tamaño"],correcta:2,color:"#00ff99"},
+  {tipo:"DEDUCCIÓN",icono:"📅",readout:"Hoy es lunes.<br>En 3 días será...",pregunta:"Selecciona el día correcto.",opciones:["Jueves","Viernes","Miércoles","Martes"],correcta:0,color:"#00ff99"},
+  {tipo:"DEDUCCIÓN",icono:"🚫",readout:"Perro | Gato | Auto | Vaca",pregunta:"¿Qué no pertenece al grupo?",opciones:["Perro","Gato","Auto","Vaca"],correcta:2,color:"#00ff99"},
+  {tipo:"DEDUCCIÓN",icono:"🔍",readout:"Triángulo | Cuadrado | Círculo | Perro",pregunta:"¿Qué no encaja?",opciones:["Triángulo","Cuadrado","Círculo","Perro"],correcta:3,color:"#00ff99"},
 
-  {p:"Si tienes 3 manzanas y comes 1 ¿cuántas quedan?",o:["2","1","3","0"],c:0},
-  {p:"¿Qué número es par?",o:["3","7","10","5"],c:2},
-  {p:"¿Qué sigue? 100,90,80,_",o:["70","60","75","85"],c:0},
-  {p:"¿Qué es lógico?",o:["Fuego frío","Agua seca","Sol caliente","Hielo caliente"],c:2},
-  {p:"¿Qué no encaja?",o:["Triángulo","Cuadrado","Círculo","Perro"],c:3},
+  {tipo:"CÓDIGO LÓGICO",icono:"🔐",readout:"A = 1<br>B = 2<br>C = ?",pregunta:"Descifra el valor.",opciones:["2","3","4","5"],correcta:1,color:"#ffcc00"},
+  {tipo:"CÓDIGO LÓGICO",icono:"🔐",readout:"Z = 26<br>Y = 25<br>X = ?",pregunta:"¿Cuánto vale X?",opciones:["23","24","25","22"],correcta:1,color:"#ffcc00"},
+  {tipo:"CÓDIGO LÓGICO",icono:"🔐",readout:"ROJO = 4<br>AZUL = 4<br>VERDE = ?",pregunta:"¿Cuál es el código de VERDE?",opciones:["4","5","6","7"],correcta:1,color:"#ffcc00"},
+  {tipo:"CÓDIGO LÓGICO",icono:"🔐",readout:"SOL = 3<br>LUNA = 4<br>ESTRELLA = ?",pregunta:"Calcula el código.",opciones:["6","7","8","9"],correcta:2,color:"#ffcc00"},
+  {tipo:"CÓDIGO LÓGICO",icono:"🔐",readout:"MEXA = 4<br>TECHCORE = ?",pregunta:"Número de letras.",opciones:["6","7","8","9"],correcta:2,color:"#ffcc00"},
 
-  // puedes seguir agregando hasta 50 igual formato
+  {tipo:"RAZONAMIENTO",icono:"🧠",readout:"Si 5x = 10",pregunta:"¿Cuánto vale x?",opciones:["2","5","10","0"],correcta:0,color:"#ff244f"},
+  {tipo:"RAZONAMIENTO",icono:"🧠",readout:"10 - 3 = 7<br>7 - 2 = ?",pregunta:"Resuelve.",opciones:["5","4","3","6"],correcta:0,color:"#ff244f"},
+  {tipo:"RAZONAMIENTO",icono:"🧠",readout:"0.5 | 0.05 | 0.005 | 0.0005",pregunta:"¿Cuál es mayor?",opciones:["0.5","0.05","0.005","0.0005"],correcta:0,color:"#ff244f"},
+  {tipo:"RAZONAMIENTO",icono:"🧠",readout:"3 manzanas - 1 comida",pregunta:"¿Cuántas quedan?",opciones:["2","1","3","0"],correcta:0,color:"#ff244f"},
+  {tipo:"RAZONAMIENTO",icono:"🧠",readout:"Número par detectado",pregunta:"¿Cuál número es par?",opciones:["3","7","10","5"],correcta:2,color:"#ff244f"}
 ];
 
-function mezclar(arr){
-  return arr.sort(()=>Math.random()-0.5);
+function mezclar(array){
+  return array.sort(() => Math.random() - 0.5);
 }
 
-let partida = mezclar([...preguntas]).slice(0,total);
+function aplicarColor(color){
+  document.documentElement.style.setProperty("--main", color);
+  document.body.style.background =
+    "radial-gradient(circle at top, " + color + "33 0%, #050208 48%, #000 100%)";
+}
 
-function cargar(){
-  if(actual>=total){
-    document.getElementById("pregunta").innerText="Finalizado";
+function iniciarJuego(){
+  puntos = 0;
+  vidas = 5;
+  actual = 0;
+  partida = mezclar([...bancoPreguntas]).slice(0,total);
+
+  document.getElementById("juego").style.display = "grid";
+  document.getElementById("final").style.display = "none";
+  cargarPregunta();
+}
+
+function cargarPregunta(){
+  if(actual >= total){
+    terminarJuego(true);
     return;
   }
 
-  let p=partida[actual];
+  let p = partida[actual];
+  aplicarColor(p.color);
 
-  document.getElementById("pregunta").innerText=p.p;
-  document.getElementById("contador").innerText=(actual+1)+"/5";
-  document.getElementById("progreso").style.width=(actual/total*100)+"%";
+  document.getElementById("tipo").innerText = "MODO: " + p.tipo;
+  document.getElementById("icono").innerText = p.icono;
+  document.getElementById("readout").innerHTML = p.readout;
+  document.getElementById("pregunta").innerText = p.pregunta;
+  document.getElementById("contador").innerText = "Reto: " + (actual + 1) + "/5";
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+  document.getElementById("vidas").innerText = "Vidas: " + vidas + " ❤️";
+  document.getElementById("estado").innerText = "Estado: Activo";
+  document.getElementById("scan").innerText = "SCAN " + (actual + 1) + "/5";
+  document.getElementById("progreso").style.width = ((actual / total) * 100) + "%";
+  document.getElementById("mensaje").innerText = "";
+  document.getElementById("hackline").innerText = "Analizando patrón mental y probabilidad lógica...";
+
+  let opcionesMezcladas = p.opciones.map((texto,index)=>{
+    return {texto:texto, ok:index === p.correcta};
+  });
+
+  opcionesMezcladas = mezclar(opcionesMezcladas);
 
   for(let i=0;i<4;i++){
-    document.getElementById("op"+i).innerText=p.o[i];
+    let boton = document.getElementById("op"+i);
+    boton.innerText = opcionesMezcladas[i].texto;
+    boton.dataset.ok = opcionesMezcladas[i].ok;
+    boton.disabled = false;
+    boton.className = "";
   }
 }
 
-function responder(i){
-  let p=partida[actual];
+function responder(num){
+  let boton = document.getElementById("op"+num);
+  let ok = boton.dataset.ok === "true";
 
-  if(i===p.c){
-    puntos+=100;
-    document.getElementById("mensaje").innerText="Correcto +100";
+  for(let i=0;i<4;i++){
+    document.getElementById("op"+i).disabled = true;
+  }
+
+  if(ok){
+    puntos += 100;
+    boton.classList.add("correcto");
+    document.getElementById("mensaje").innerText = "✅ RAZONAMIENTO VALIDADO +100";
+    document.getElementById("hackline").innerText = "Patrón correcto. Núcleo lógico estable.";
   }else{
-    puntos-=25;
-    chances--;
-    document.getElementById("mensaje").innerText="Error -25";
+    puntos -= 20;
+    vidas--;
+    boton.classList.add("error");
+    document.getElementById("mensaje").innerText = "❌ ERROR DE DEDUCCIÓN -20";
+    document.getElementById("hackline").innerText = "Fallo lógico detectado. Integridad reducida.";
   }
 
   actual++;
 
-  document.getElementById("score").innerText="Puntos: "+puntos;
-  document.getElementById("vidas").innerText="Chances: "+chances;
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+  document.getElementById("vidas").innerText = "Vidas: " + vidas + " ❤️";
+  document.getElementById("progreso").style.width = ((actual / total) * 100) + "%";
 
-  if(chances<=0){
-    document.getElementById("pregunta").innerText="Sin vidas";
+  if(vidas <= 0){
+    setTimeout(()=>terminarJuego(false),900);
     return;
   }
 
-  setTimeout(cargar,800);
+  setTimeout(cargarPregunta,950);
 }
 
-cargar();
+function terminarJuego(completado){
+  document.getElementById("juego").style.display = "none";
+  document.getElementById("final").style.display = "block";
+  document.getElementById("progreso").style.width = "100%";
 
+  localStorage.setItem("logicaScore", puntos);
+
+  if(completado){
+    document.getElementById("tituloFinal").innerText = "🏆 NÚCLEO LÓGICO COMPLETADO";
+    document.getElementById("textoFinal").innerText =
+      "Terminaste los 5 retos de lógica. Puntaje obtenido: " + puntos;
+  }else{
+    document.getElementById("tituloFinal").innerText = "☠ NÚCLEO LÓGICO BLOQUEADO";
+    document.getElementById("textoFinal").innerText =
+      "Te quedaste sin vidas. Puntaje obtenido: " + puntos;
+  }
+}
+
+function reiniciar(){
+  iniciarJuego();
+}
+
+iniciarJuego();
 </script>
 
 </body>
