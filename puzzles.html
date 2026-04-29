@@ -2,18 +2,27 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Puzzle Core</title>
+<title>Puzzle Core Hacker</title>
 
 <style>
 *{box-sizing:border-box}
 
+:root{
+  --main:#00ff99;
+  --main2:#00eaff;
+  --danger:#ff244f;
+  --bg:#020404;
+}
+
 body{
   margin:0;
   min-height:100vh;
-  background:black;
-  font-family:Arial;
+  background:
+    radial-gradient(circle at top,#071a14 0%,#020404 50%,#000 100%);
   color:white;
-  transition:0.4s;
+  font-family:Consolas, Arial, sans-serif;
+  overflow-x:hidden;
+  transition:.35s;
 }
 
 body::before{
@@ -21,132 +30,245 @@ body::before{
   position:fixed;
   inset:0;
   background-image:
-    linear-gradient(rgba(0,255,255,0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,255,0.08) 1px, transparent 1px);
-  background-size:40px 40px;
-  animation:grid 10s linear infinite;
+    linear-gradient(rgba(0,255,153,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,153,.06) 1px,transparent 1px);
+  background-size:38px 38px;
+  animation:gridMove 12s linear infinite;
+  pointer-events:none;
 }
 
-@keyframes grid{
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.03) 0px,
+    rgba(255,255,255,.03) 1px,
+    transparent 3px,
+    transparent 6px
+  );
+  pointer-events:none;
+  opacity:.35;
+}
+
+@keyframes gridMove{
   from{background-position:0 0}
   to{background-position:80px 80px}
 }
 
 .container{
-  width:95%;
-  max-width:1100px;
-  margin:30px auto;
-  padding:25px;
+  width:94%;
+  max-width:1180px;
+  margin:25px auto;
+  padding:24px;
+  border:1px solid var(--main);
   border-radius:20px;
-  border:1px solid #00eaff;
-  background:rgba(0,10,15,.9);
-  box-shadow:0 0 30px #00eaff55;
+  background:rgba(0,10,8,.9);
+  box-shadow:0 0 35px color-mix(in srgb, var(--main) 50%, transparent);
   position:relative;
 }
 
+.header{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  align-items:center;
+  flex-wrap:wrap;
+  border-bottom:1px solid color-mix(in srgb, var(--main) 45%, transparent);
+  padding-bottom:18px;
+}
+
 h1{
-  text-align:center;
-  color:#00eaff;
+  margin:0;
+  color:var(--main);
+  font-size:42px;
+  text-shadow:0 0 18px var(--main);
+  letter-spacing:2px;
+}
+
+.sub{
+  color:#c7fff0;
+  margin-top:8px;
+}
+
+.classified{
+  border:1px solid var(--danger);
+  color:var(--danger);
+  padding:12px 18px;
+  border-radius:999px;
+  animation:blink 1.2s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:.4}
 }
 
 .top{
-  display:flex;
-  justify-content:space-between;
-  margin:20px 0;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin:22px 0;
 }
 
 .box{
-  border:1px solid #00eaff;
-  padding:12px 18px;
-  border-radius:12px;
-  background:#001018;
+  padding:14px;
+  border:1px solid var(--main);
+  border-radius:14px;
+  background:rgba(0,255,153,.06);
+  text-align:center;
+  font-weight:bold;
 }
 
 .bar{
-  height:12px;
-  border:1px solid #00eaff;
+  height:14px;
+  border:1px solid var(--main);
   border-radius:999px;
   overflow:hidden;
-  margin:20px 0;
+  background:#020202;
+  margin-bottom:22px;
 }
 
 .fill{
   height:100%;
   width:0%;
-  background:linear-gradient(90deg,#00eaff,#00ff99);
+  background:linear-gradient(90deg,var(--main),var(--main2));
   transition:.3s;
 }
 
 .game{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:20px;
+  gap:22px;
+}
+
+.terminal,.panel{
+  border:1px solid color-mix(in srgb, var(--main) 65%, transparent);
+  border-radius:18px;
+  background:rgba(255,255,255,.035);
+  overflow:hidden;
+}
+
+.terminalTop{
+  padding:12px 16px;
+  background:rgba(0,0,0,.65);
+  border-bottom:1px solid var(--main);
+  color:var(--main);
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
 }
 
 .visual{
-  border:1px solid #00eaff55;
-  border-radius:15px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  min-height:315px;
+  display:grid;
+  place-items:center;
+  padding:30px;
+  text-align:center;
+  color:var(--main);
   font-size:40px;
-  padding:20px;
+  line-height:1.5;
+  text-shadow:0 0 15px var(--main);
 }
 
 .panel{
-  border:1px solid #00eaff55;
-  border-radius:15px;
-  padding:20px;
+  padding:24px;
 }
 
 .tipo{
-  color:#00ff99;
+  color:var(--main2);
+  letter-spacing:2px;
+  font-size:14px;
 }
 
 .pregunta{
-  font-size:22px;
-  margin:15px 0;
+  margin:18px 0;
+  font-size:24px;
+  color:#fff;
 }
 
 .opciones{
   display:grid;
-  gap:10px;
+  gap:13px;
 }
 
 button{
-  padding:14px;
-  border-radius:10px;
-  border:1px solid #00eaff;
-  background:black;
-  color:#00eaff;
+  padding:15px;
+  border-radius:12px;
+  border:1px solid var(--main);
+  background:#020202;
+  color:var(--main);
   cursor:pointer;
-  transition:.2s;
+  transition:.18s;
+  font-size:16px;
+  font-family:Consolas, Arial, sans-serif;
 }
 
 button:hover{
-  background:#00eaff;
-  color:black;
+  background:var(--main);
+  color:#000;
+  transform:translateY(-2px);
+  box-shadow:0 0 18px var(--main);
 }
 
 .correcto{
   background:#00ff99!important;
-  color:black!important;
+  color:#000!important;
+  border-color:#00ff99!important;
 }
 
 .error{
   background:#ff244f!important;
   color:white!important;
+  border-color:#ff244f!important;
+}
+
+.msg{
+  min-height:38px;
+  margin-top:18px;
+  color:#ffdf7e;
+  font-weight:bold;
 }
 
 .final{
   display:none;
   text-align:center;
-  padding:20px;
+  border:1px solid var(--main);
+  border-radius:18px;
+  padding:30px;
+  background:rgba(255,255,255,.04);
 }
 
-@media(max-width:800px){
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:22px;
+}
+
+.back{
+  border-color:white;
+  color:white;
+}
+
+.back:hover{
+  background:white;
+  color:black;
+  box-shadow:none;
+}
+
+.hackline{
+  color:var(--main);
+  font-size:14px;
+  margin-top:12px;
+  min-height:22px;
+}
+
+@media(max-width:850px){
   .game{grid-template-columns:1fr}
+  .top{grid-template-columns:1fr}
+  h1{font-size:32px}
 }
 </style>
 </head>
@@ -155,154 +277,222 @@ button:hover{
 
 <div class="container">
 
-<h1>🤖 PUZZLE CORE</h1>
+  <div class="header">
+    <div>
+      <h1>☠ PUZZLE CORE</h1>
+      <div class="sub">Terminal de entrenamiento táctico | Sistema hacker clasificado</div>
+    </div>
+    <div class="classified">ACCESO RESTRINGIDO</div>
+  </div>
 
-<div class="top">
-  <div class="box" id="puntos">Puntos: 0</div>
-  <div class="box" id="vidas">Vidas: 5 ❤️</div>
-  <div class="box" id="contador">1/5</div>
-</div>
+  <div class="top">
+    <div class="box" id="puntos">Puntos: 0</div>
+    <div class="box" id="vidas">Vidas: 5 ❤️</div>
+    <div class="box" id="contador">Puzzle: 1/5</div>
+    <div class="box" id="nivel">Nivel: Hacker</div>
+  </div>
 
-<div class="bar">
-  <div class="fill" id="barra"></div>
-</div>
+  <div class="bar">
+    <div class="fill" id="barra"></div>
+  </div>
 
-<div class="game" id="game">
-
-  <div class="visual" id="visual"></div>
-
-  <div class="panel">
-    <div class="tipo" id="tipo"></div>
-    <div class="pregunta" id="pregunta"></div>
-
-    <div class="opciones">
-      <button onclick="responder(0)" id="b0"></button>
-      <button onclick="responder(1)" id="b1"></button>
-      <button onclick="responder(2)" id="b2"></button>
-      <button onclick="responder(3)" id="b3"></button>
+  <div class="game" id="game">
+    <div class="terminal">
+      <div class="terminalTop">
+        <span>● ● ● / classified_terminal.exe</span>
+        <span id="scan">SCAN...</span>
+      </div>
+      <div class="visual" id="visual"></div>
     </div>
 
-    <h3 id="msg"></h3>
+    <div class="panel">
+      <div class="tipo" id="tipo"></div>
+      <div class="pregunta" id="pregunta"></div>
+
+      <div class="opciones">
+        <button onclick="responder(0)" id="b0"></button>
+        <button onclick="responder(1)" id="b1"></button>
+        <button onclick="responder(2)" id="b2"></button>
+        <button onclick="responder(3)" id="b3"></button>
+      </div>
+
+      <div class="msg" id="msg"></div>
+      <div class="hackline" id="hackline">Inicializando núcleo lógico...</div>
+    </div>
+  </div>
+
+  <div class="final" id="final">
+    <h2 id="resultado"></h2>
+    <p id="detalleFinal"></p>
+
+    <div class="actions">
+      <button onclick="reiniciar()">🔁 Nuevo intento</button>
+      <button class="back" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="back" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
   </div>
 
 </div>
 
-<div class="final" id="final">
-  <h2 id="resultado"></h2>
-  <button onclick="location.reload()">REINTENTAR</button>
-</div>
-
-</div>
-
 <script>
+let puntos = 0;
+let vidas = 5;
+let actual = 0;
+let total = 5;
+let partida = [];
 
-let puntos=0;
-let vidas=5;
-let actual=0;
-let total=5;
+const puzzles = [
+  {t:"SECUENCIA",v:"2 → 4 → 8 → 16 → ?",p:"Detecta el patrón del sistema.",o:["24","30","32","40"],c:2,color:"#00eaff"},
+  {t:"SECUENCIA",v:"3 → 6 → 12 → 24 → ?",p:"¿Qué número continúa?",o:["36","42","48","60"],c:2,color:"#00eaff"},
+  {t:"SECUENCIA",v:"1 → 4 → 9 → 16 → ?",p:"Completa la secuencia.",o:["20","25","30","36"],c:1,color:"#00eaff"},
+  {t:"SECUENCIA",v:"100 → 90 → 80 → 70 → ?",p:"¿Qué sigue?",o:["65","60","55","50"],c:1,color:"#00eaff"},
+  {t:"SECUENCIA",v:"5 → 10 → 20 → 40 → ?",p:"Sistema duplicando valores.",o:["60","70","80","90"],c:2,color:"#00eaff"},
 
-const puzzles=[
-{t:"SECUENCIA",v:"2 → 4 → 8 → ?",p:"¿Siguiente?",o:["10","12","16","14"],c:2,color:"#00eaff"},
-{t:"SECUENCIA",v:"3 → 6 → 12 → ?",p:"¿Continúa?",o:["18","24","30","36"],c:1,color:"#00eaff"},
+  {t:"MEMORIA",v:"🔐 7 - 2 - 9",p:"Ingresa el código detectado.",o:["729","792","279","927"],c:0,color:"#ff244f"},
+  {t:"MEMORIA",v:"⚡ A - 4 - Z",p:"Selecciona el código correcto.",o:["A4Z","AZ4","4AZ","ZA4"],c:0,color:"#ff244f"},
+  {t:"MEMORIA",v:"🛰️ R - 8 - M",p:"¿Qué clave apareció?",o:["R8M","M8R","8RM","RM8"],c:0,color:"#ff244f"},
+  {t:"MEMORIA",v:"☠ X - 3 - Q",p:"Confirma el código.",o:["X3Q","Q3X","3XQ","XQ3"],c:0,color:"#ff244f"},
+  {t:"MEMORIA",v:"🤖 T - 5 - K",p:"Elige la clave exacta.",o:["T5K","K5T","5TK","TK5"],c:0,color:"#ff244f"},
 
-{t:"MEMORIA",v:"🔐 7 - 2 - 9",p:"¿Código?",o:["729","792","279","927"],c:0,color:"#ff244f"},
-{t:"MEMORIA",v:"⚡ A - 4 - Z",p:"¿Código correcto?",o:["A4Z","AZ4","4AZ","Z4A"],c:0,color:"#ff244f"},
+  {t:"PATRÓN VISUAL",v:"🔴 🔵 🔴 🔵 🔴 ?",p:"¿Qué símbolo sigue?",o:["🔴","🔵","🟢","⚫"],c:1,color:"#ffcc00"},
+  {t:"PATRÓN VISUAL",v:"▲ ▲ ■ ■ ▲ ▲ ?",p:"Completa el patrón.",o:["■","▲","◆","●"],c:0,color:"#ffcc00"},
+  {t:"PATRÓN VISUAL",v:"⬛ ⬜ ⬛ ⬜ ⬛ ?",p:"¿Cuál sigue?",o:["⬛","⬜","🟥","🟦"],c:1,color:"#ffcc00"},
+  {t:"PATRÓN VISUAL",v:"A B A B A ?",p:"Detecta el ciclo.",o:["A","B","C","D"],c:1,color:"#ffcc00"},
+  {t:"PATRÓN VISUAL",v:"⚙️ 💻 ⚙️ 💻 ⚙️ ?",p:"Completa la ruta técnica.",o:["🧠","💻","⚙️","🔐"],c:1,color:"#ffcc00"},
 
-{t:"LÓGICA",v:"CPU + RAM + ?",p:"¿Falta?",o:["Fuente","Mouse","Teclado","Pantalla"],c:0,color:"#00ff99"},
-{t:"LÓGICA",v:"Entrada → Proceso → ?",p:"¿Resultado?",o:["Salida","Error","Cable","Luz"],c:0,color:"#00ff99"},
+  {t:"CÓDIGO SECRETO",v:"A=1<br>B=2<br>C=?",p:"Descifra el valor.",o:["2","3","4","5"],c:1,color:"#aa00ff"},
+  {t:"CÓDIGO SECRETO",v:"Z=26<br>Y=25<br>X=?",p:"Calcula el valor.",o:["24","23","22","21"],c:0,color:"#aa00ff"},
+  {t:"CÓDIGO SECRETO",v:"ROJO=4<br>AZUL=4<br>VERDE=?",p:"Código por letras.",o:["4","5","6","7"],c:1,color:"#aa00ff"},
+  {t:"CÓDIGO SECRETO",v:"SOL=3<br>LUNA=4<br>ESTRELLA=?",p:"Analiza el patrón.",o:["6","7","8","9"],c:2,color:"#aa00ff"},
+  {t:"CÓDIGO SECRETO",v:"MEXA=4<br>TECHCORE=?",p:"Número de caracteres.",o:["6","7","8","9"],c:2,color:"#aa00ff"},
 
-{t:"PATRÓN",v:"🔴 🔵 🔴 🔵 ?",p:"¿Sigue?",o:["🔴","🔵","⚫","🟢"],c:1,color:"#ffcc00"},
-{t:"PATRÓN",v:"▲ ▲ ■ ■ ▲ ▲ ?",p:"¿Siguiente?",o:["■","▲","◆","●"],c:0,color:"#ffcc00"},
+  {t:"ROBOT CORE",v:"CPU + RAM + SSD + ?",p:"¿Qué alimenta el sistema?",o:["Fuente","Mouse","Teclado","Gabinete"],c:0,color:"#00ff99"},
+  {t:"ROBOT CORE",v:"Entrada → Proceso → ?",p:"Completa el flujo lógico.",o:["Salida","Error","Cable","Ruido"],c:0,color:"#00ff99"},
+  {t:"ROBOT CORE",v:"Sensor → Datos → Decisión → ?",p:"¿Qué haría un robot después?",o:["Acción","Dormir","Apagar","Borrar"],c:0,color:"#00ff99"},
+  {t:"ROBOT CORE",v:"Código → Prueba → Error → ?",p:"¿Qué sigue?",o:["Debuggear","Ignorar","Apagar","Formatear"],c:0,color:"#00ff99"},
+  {t:"ROBOT CORE",v:"Problema → Análisis → Solución → ?",p:"Último paso correcto.",o:["Prueba","Ruido","Decoración","Azar"],c:0,color:"#00ff99"},
 
-{t:"CÓDIGO",v:"A=1 B=2 C=?",p:"¿Valor?",o:["2","3","4","5"],c:1,color:"#aa00ff"},
-{t:"CÓDIGO",v:"Z=26 Y=25 X=?",p:"¿Valor?",o:["24","23","22","21"],c:0,color:"#aa00ff"}
+  {t:"SOPA MENTAL",v:"C O D E<br>A R A M<br>T E C H<br>L O G I",p:"¿Qué palabra aparece?",o:["CODE","CASA","PERRO","MESA"],c:0,color:"#00ffaa"},
+  {t:"SOPA MENTAL",v:"R A M X<br>O T E C<br>M O U S<br>G P U A",p:"Componente oculto.",o:["RAM","CPU","SSD","BIOS"],c:0,color:"#00ffaa"},
+  {t:"SOPA MENTAL",v:"B I O S<br>X A R T<br>C P U Z<br>L O G A",p:"Palabra visible.",o:["BIOS","HTML","JAVA","CABLE"],c:0,color:"#00ffaa"},
+  {t:"SOPA MENTAL",v:"S S D A<br>T E C H<br>R A M X<br>G P U Z",p:"¿Cuál NO aparece?",o:["SSD","RAM","GPU","MOUSE"],c:3,color:"#00ffaa"},
+  {t:"SOPA MENTAL",v:"L O G I<br>C A X Z<br>D A T A<br>B I T S",p:"Palabra completa.",o:["DATA","MOTOR","CABLE","ROBOT"],c:0,color:"#00ffaa"}
 ];
 
-function rand(arr){
-  return arr.sort(()=>Math.random()-0.5);
+function mezclar(array){
+  return array.sort(() => Math.random() - 0.5);
 }
 
-let partida=rand([...puzzles]).slice(0,total);
+function aplicarColor(color){
+  document.documentElement.style.setProperty("--main", color);
+  document.body.style.background =
+    "radial-gradient(circle at top, " + color + "33 0%, #020404 48%, #000 100%)";
+}
+
+function iniciar(){
+  puntos = 0;
+  vidas = 5;
+  actual = 0;
+  partida = mezclar([...puzzles]).slice(0,total);
+
+  document.getElementById("game").style.display = "grid";
+  document.getElementById("final").style.display = "none";
+  cargar();
+}
 
 function cargar(){
-
-  if(actual>=total){
-    terminar();
+  if(actual >= total){
+    terminar(true);
     return;
   }
 
-  let p=partida[actual];
+  let p = partida[actual];
+  aplicarColor(p.color);
 
-  document.body.style.background=p.color;
+  document.getElementById("tipo").innerText = "MODO: " + p.t;
+  document.getElementById("visual").innerHTML = p.v;
+  document.getElementById("pregunta").innerText = p.p;
+  document.getElementById("contador").innerText = "Puzzle: " + (actual+1) + "/5";
+  document.getElementById("puntos").innerText = "Puntos: " + puntos;
+  document.getElementById("vidas").innerText = "Vidas: " + vidas + " ❤️";
+  document.getElementById("barra").style.width = ((actual/total)*100) + "%";
+  document.getElementById("msg").innerText = "";
+  document.getElementById("scan").innerText = "SCAN " + (actual+1) + "/5";
+  document.getElementById("hackline").innerText = "Analizando patrón... núcleo activo.";
 
-  document.getElementById("tipo").innerText=p.t;
-  document.getElementById("visual").innerText=p.v;
-  document.getElementById("pregunta").innerText=p.p;
-
-  document.getElementById("contador").innerText=(actual+1)+"/5";
-
-  let ops=rand(p.o.map((txt,i)=>({txt,ok:i===p.c})));
+  let opciones = p.o.map((txt,i)=>({txt,ok:i===p.c}));
+  opciones = mezclar(opciones);
 
   for(let i=0;i<4;i++){
-    let b=document.getElementById("b"+i);
-    b.innerText=ops[i].txt;
-    b.dataset.ok=ops[i].ok;
-    b.className="";
-    b.disabled=false;
+    let b = document.getElementById("b"+i);
+    b.innerText = opciones[i].txt;
+    b.dataset.ok = opciones[i].ok;
+    b.disabled = false;
+    b.className = "";
   }
-
 }
 
 function responder(i){
-
-  let b=document.getElementById("b"+i);
-
-  let ok=b.dataset.ok==="true";
+  let b = document.getElementById("b"+i);
+  let ok = b.dataset.ok === "true";
 
   for(let j=0;j<4;j++){
-    document.getElementById("b"+j).disabled=true;
+    document.getElementById("b"+j).disabled = true;
   }
 
   if(ok){
-    puntos+=100;
+    puntos += 100;
     b.classList.add("correcto");
-    document.getElementById("msg").innerText="Correcto +100";
+    document.getElementById("msg").innerText = "✅ ACCESO VALIDADO +100";
+    document.getElementById("hackline").innerText = "Respuesta aceptada. Firewall superado.";
   }else{
-    puntos-=20;
+    puntos -= 20;
     vidas--;
     b.classList.add("error");
-    document.getElementById("msg").innerText="Error -20";
+    document.getElementById("msg").innerText = "❌ ERROR DE SISTEMA -20";
+    document.getElementById("hackline").innerText = "Fallo detectado. Integridad reducida.";
   }
 
   actual++;
 
-  document.getElementById("puntos").innerText="Puntos: "+puntos;
-  document.getElementById("vidas").innerText="Vidas: "+vidas+" ❤️";
-  document.getElementById("barra").style.width=(actual/total*100)+"%";
+  document.getElementById("puntos").innerText = "Puntos: " + puntos;
+  document.getElementById("vidas").innerText = "Vidas: " + vidas + " ❤️";
+  document.getElementById("barra").style.width = ((actual/total)*100) + "%";
 
-  if(vidas<=0){
-    setTimeout(terminar,800);
+  if(vidas <= 0){
+    setTimeout(()=>terminar(false),900);
     return;
   }
 
-  setTimeout(cargar,800);
+  setTimeout(cargar,950);
 }
 
-function terminar(){
-  document.getElementById("game").style.display="none";
-  document.getElementById("final").style.display="block";
+function terminar(completo){
+  document.getElementById("game").style.display = "none";
+  document.getElementById("final").style.display = "block";
+  document.getElementById("barra").style.width = "100%";
 
-  document.getElementById("resultado").innerText="Resultado final: "+puntos;
+  localStorage.setItem("logicaScore", puntos);
 
-  localStorage.setItem("logicaScore",puntos);
+  if(completo){
+    document.getElementById("resultado").innerText = "🏆 SISTEMA DESBLOQUEADO";
+    document.getElementById("detalleFinal").innerText =
+      "Terminaste los 5 puzzles. Puntaje obtenido: " + puntos;
+  }else{
+    document.getElementById("resultado").innerText = "☠ ACCESO BLOQUEADO";
+    document.getElementById("detalleFinal").innerText =
+      "Te quedaste sin vidas. Puntaje obtenido: " + puntos;
+  }
 }
 
-cargar();
+function reiniciar(){
+  iniciar();
+}
 
-</script>
-
-</body>
-</html>
+iniciar();
 </script>
 
 </body>
