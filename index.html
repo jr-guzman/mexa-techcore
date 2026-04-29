@@ -5,7 +5,80 @@
 <title>Mexa TechCore | Hub</title>
 
 <style>
-* {
+/* ===== AVATAR GHOST ===== */
+
+.avatar-ghost {
+  width: 95px;
+  height: 95px;
+  margin: 0 auto 18px;
+  border: 2px solid #ff273c;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 25px #ff273caa;
+  animation: pulse 2s infinite;
+}
+
+.ghost-head {
+  width: 58px;
+  height: 68px;
+  background: #d8d8d8;
+  border-radius: 45% 45% 35% 35%;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #222;
+}
+
+.mask {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 34px;
+  background: #111;
+  border-top: 2px solid #333;
+}
+
+.eye {
+  position: absolute;
+  top: 22px;
+  width: 10px;
+  height: 10px;
+  background: #000;
+  border-radius: 50%;
+}
+
+.eye.left { left: 14px; }
+.eye.right { right: 14px; }
+
+/* ===== INPUT ===== */
+
+#inputNombre {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  background: #020b0f;
+  border: 1px solid #00eaff;
+  color: #00eaff;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.guardarNombre {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid #ff273c;
+  color: #ff273c;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.guardarNombre:hover {
+  background: #ff273c;
+  color: white;
+}
+  * {
   box-sizing: border-box;
 }
 
@@ -311,27 +384,40 @@ body::before {
 
 <div class="hub">
 
-  <aside class="panel">
-    <div class="pilot">
-      <div class="avatar">🎧</div>
-      <h3>PILOTO: MEXA-07</h3>
-      <p>RANGO: OPERADOR TÁCTICO</p>
+<aside class="panel">
+
+  <div class="pilot">
+    <div class="avatar-ghost">
+      <div class="ghost-head">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mask"></div>
+      </div>
     </div>
 
-    <div class="menu">
-      <button>⌂ HUB PRINCIPAL</button>
-      <button>📊 ESTADÍSTICAS</button>
-      <button>🏆 LOGROS</button>
-      <button>🛰️ MISIONES</button>
-      <button>⚙️ CONFIGURACIÓN</button>
-    </div>
+    <h3>ASPIRANTE: <span id="nombreAspirante">MEXA-07</span></h3>
+    <p>RANGO: OPERADOR TÁCTICO</p>
 
-    <div class="status">
-      SISTEMA EN LÍNEA<br>
-      CONEXIÓN SEGURA<br>
-      CLASIFICACIÓN: SECRETO
-    </div>
-  </aside>
+    <input id="inputNombre" placeholder="Escribe tu usuario">
+    <button class="guardarNombre" onclick="guardarNombre()">GUARDAR USUARIO</button>
+  </div>
+
+  <div class="menu">
+    <button onclick="window.location.href='index.html'">⌂ HUB PRINCIPAL</button>
+    <button onclick="window.location.href='logica.html'">🧩 ZONA DE PUZLES</button>
+    <button onclick="window.location.href='sopa.html'">🔍 SOPA DE LETRAS</button>
+    <button onclick="window.location.href='secuencias.html'">🧠 SECUENCIAS</button>
+    <button onclick="window.location.href='rompecabezas.html'">🛰️ ROMPECABEZAS</button>
+    <button onclick="alert('Estadísticas próximamente')">📊 ESTADÍSTICAS</button>
+  </div>
+
+  <div class="status">
+    SISTEMA EN LÍNEA<br>
+    CONEXIÓN SEGURA<br>
+    CLASIFICACIÓN: SECRETO
+  </div>
+
+</aside>
 
   <main class="center">
     <div class="header">
@@ -440,6 +526,25 @@ function resetear() {
   location.reload();
 }
 </script>
+<script>
+let nombreGuardado = localStorage.getItem("nombreAspirante");
 
+if (nombreGuardado) {
+  document.getElementById("nombreAspirante").innerText = nombreGuardado;
+}
+
+function guardarNombre() {
+  let nombre = document.getElementById("inputNombre").value.trim();
+
+  if (nombre === "") {
+    alert("Escribe un nombre de usuario");
+    return;
+  }
+
+  localStorage.setItem("nombreAspirante", nombre);
+  document.getElementById("nombreAspirante").innerText = nombre;
+  document.getElementById("inputNombre").value = "";
+}
+</script>
 </body>
 </html>
