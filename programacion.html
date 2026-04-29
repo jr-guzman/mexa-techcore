@@ -2,146 +2,720 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Misión Programación</title>
+<title>Programación Arena</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background: #050505;
-  color: #00f7ff;
-  font-family: Arial;
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, #180006 0%, #050505 45%, #21000b 100%);
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 0, 60, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 60, 0.08) 1px, transparent 1px);
+  background-size: 35px 35px;
+  pointer-events: none;
+}
+
+.contenedor {
+  width: 92%;
+  max-width: 1050px;
+  margin: 35px auto;
+  padding: 32px;
+  border-radius: 24px;
+  background: rgba(10, 0, 4, 0.88);
+  border: 1px solid #ff174d;
+  box-shadow: 0 0 35px rgba(255, 23, 77, 0.35);
+  position: relative;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255, 23, 77, 0.5);
+  padding-bottom: 20px;
+}
+
+.titulo {
+  text-align: left;
+}
+
+h1 {
+  margin: 0;
+  font-size: 42px;
+  color: #ff174d;
+  letter-spacing: 1px;
+}
+
+.subtitulo {
+  color: #ffb3c4;
+  margin-top: 8px;
+}
+
+.badge {
+  background: rgba(255, 23, 77, 0.15);
+  border: 1px solid #ff174d;
+  padding: 12px 18px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 25px 0;
+}
+
+.caja {
+  background: linear-gradient(180deg, rgba(255,23,77,0.18), rgba(255,23,77,0.04));
+  border: 1px solid rgba(255, 23, 77, 0.75);
+  padding: 16px;
+  border-radius: 16px;
   text-align: center;
+  font-weight: bold;
 }
 
-.card {
-  border: 2px solid #00f7ff;
-  width: 70%;
-  margin: 40px auto;
-  padding: 25px;
-  border-radius: 12px;
+.barra {
+  width: 100%;
+  height: 16px;
+  background: #170008;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #ff174d;
+  margin-bottom: 25px;
 }
 
-button {
-  margin: 12px;
-  padding: 15px 25px;
-  background: black;
-  color: #00f7ff;
-  border: 2px solid #00f7ff;
-  cursor: pointer;
-  font-size: 16px;
+.progreso {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff174d, #ff7a00);
+  transition: 0.35s;
 }
 
-button:hover {
-  background: #00f7ff;
-  color: black;
+.juego {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 25px;
+}
+
+.terminal {
+  background: #08080b;
+  border: 1px solid #ff174d;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(255,23,77,0.12);
+}
+
+.terminal-top {
+  background: #160008;
+  padding: 12px 15px;
+  border-bottom: 1px solid #ff174d;
+  color: #ffb3c4;
+  text-align: left;
+  font-size: 14px;
 }
 
 .codigo {
-  background: #111;
-  padding: 15px;
-  border-radius: 8px;
-  color: #00ff99;
-  font-size: 18px;
+  padding: 25px;
+  color: #ffdf7e;
+  text-align: left;
+  font-family: Consolas, monospace;
+  font-size: 20px;
+  min-height: 180px;
+  white-space: pre-wrap;
+}
+
+.tarjeta {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255, 23, 77, 0.65);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.pregunta {
+  font-size: 24px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.opciones {
+  display: grid;
+  gap: 14px;
+}
+
+button {
+  padding: 16px 18px;
+  font-size: 16px;
+  background: #090006;
+  color: #fff;
+  border: 1px solid #ff174d;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #ff174d;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(255, 23, 77, 0.6);
+}
+
+.correcta {
+  background: #00ff99 !important;
+  color: black !important;
+  border-color: #00ff99 !important;
+}
+
+.incorrecta {
+  background: #ff0033 !important;
+  color: white !important;
+  border-color: #ff0033 !important;
+}
+
+.mensaje {
+  margin-top: 18px;
+  min-height: 35px;
+  font-weight: bold;
+  color: #ffdf7e;
+}
+
+.final {
+  display: none;
+  margin-top: 25px;
+}
+
+.acciones {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.volver {
+  border-color: #ffffff;
+}
+
+.volver:hover {
+  background: white;
+  color: black;
+  box-shadow: none;
+}
+
+@media (max-width: 800px) {
+  .juego {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1>💻 MISIÓN PROGRAMACIÓN</h1>
-<h2 id="score">Puntos: 0</h2>
+<div class="contenedor">
 
-<div class="card">
-  <h2 id="pregunta">Pregunta</h2>
-  <div class="codigo" id="codigo"></div>
+  <div class="header">
+    <div class="titulo">
+      <h1>💻 CODE RED ARENA</h1>
+      <p class="subtitulo">Resuelve retos de programación. 5 preguntas aleatorias, solo 2 chances.</p>
+    </div>
+    <div class="badge">Módulo Programación</div>
+  </div>
 
-  <br>
+  <div class="panel">
+    <div class="caja" id="score">Puntos: 0</div>
+    <div class="caja" id="vidas">Chances: 2</div>
+    <div class="caja" id="contador">Pregunta: 1/5</div>
+  </div>
 
-  <button id="op1" onclick="responder(0)">Opción 1</button>
-  <button id="op2" onclick="responder(1)">Opción 2</button>
-  <button id="op3" onclick="responder(2)">Opción 3</button>
+  <div class="barra">
+    <div class="progreso" id="progreso"></div>
+  </div>
 
-  <h3 id="resultado"></h3>
+  <div class="juego" id="juego">
+    <div class="terminal">
+      <div class="terminal-top">● ● ● / sistema_programacion.exe</div>
+      <div class="codigo" id="codigo"></div>
+    </div>
+
+    <div class="tarjeta">
+      <div class="pregunta" id="pregunta"></div>
+
+      <div class="opciones">
+        <button id="op0" onclick="responder(0)"></button>
+        <button id="op1" onclick="responder(1)"></button>
+        <button id="op2" onclick="responder(2)"></button>
+        <button id="op3" onclick="responder(3)"></button>
+      </div>
+
+      <div class="mensaje" id="mensaje"></div>
+    </div>
+  </div>
+
+  <div class="tarjeta final" id="final">
+    <h2 id="tituloFinal"></h2>
+    <p id="textoFinal"></p>
+    <div class="acciones">
+      <button onclick="reiniciar()">🔁 Jugar otra vez</button>
+      <button class="volver" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+    </div>
+  </div>
+
+  <div class="acciones">
+    <button class="volver" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+  </div>
+
 </div>
-
-<button onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
 
 <script>
 let puntos = parseInt(localStorage.getItem("puntos")) || 0;
-document.getElementById("score").innerText = "Puntos: " + puntos;
+let chances = 2;
+let preguntaActual = 0;
+let totalPreguntas = 5;
+let preguntasPartida = [];
 
-let nivel = 0;
-
-let retos = [
+const bancoPreguntas = [
   {
-    pregunta: "¿Qué hace este código?",
-    codigo: "let x = 5 + 3;",
-    opciones: ["Guarda el número 8", "Muestra una imagen", "Apaga la computadora"],
-    correcta: 0
-  },
-  {
-    pregunta: "¿Cuál sirve para repetir algo varias veces?",
-    codigo: "Selecciona la estructura correcta",
-    opciones: ["if", "for", "alert"],
-    correcta: 1
-  },
-  {
-    pregunta: "¿Qué línea muestra un mensaje?",
-    codigo: "Elige la opción correcta",
-    opciones: ["console.log('Hola')", "let hola = 5", "body color red"],
-    correcta: 0
-  },
-  {
-    pregunta: "¿Qué significa una variable?",
+    pregunta: "¿Qué hace una variable?",
     codigo: "let nombre = 'Alex';",
-    opciones: ["Un dato guardado", "Un botón", "Un error"],
+    opciones: ["Guarda un dato", "Borra una página", "Cambia el monitor", "Apaga la PC"],
     correcta: 0
   },
   {
-    pregunta: "¿Qué hace un IF?",
-    codigo: "if (vida > 0) { jugar(); }",
-    opciones: ["Repite infinito", "Toma una decisión", "Borra archivos"],
-    correcta: 1
+    pregunta: "¿Qué estructura sirve para repetir instrucciones?",
+    codigo: "Repetir una acción 10 veces",
+    opciones: ["for", "if", "alert", "style"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace un if?",
+    codigo: "if (edad >= 18) { entrar(); }",
+    opciones: ["Toma una decisión", "Repite siempre", "Crea una imagen", "Borra variables"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Cuál muestra un mensaje en consola?",
+    codigo: "Elige la línea correcta",
+    opciones: ["console.log('Hola')", "let = console", "body.log()", "print.color()"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué tipo de dato es 'Hola'?",
+    codigo: "let texto = 'Hola';",
+    opciones: ["String", "Number", "Boolean", "Array"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué tipo de dato es 25?",
+    codigo: "let edad = 25;",
+    opciones: ["Number", "String", "Boolean", "Object"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué tipo de dato es true?",
+    codigo: "let activo = true;",
+    opciones: ["Boolean", "String", "Number", "Array"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué símbolo se usa para asignar valor?",
+    codigo: "let puntos = 100;",
+    opciones: ["=", "==", "===", "!="],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa == en programación?",
+    codigo: "5 == '5'",
+    opciones: ["Comparación flexible", "Asignación", "Suma", "Comentario"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa === en JavaScript?",
+    codigo: "5 === '5'",
+    opciones: ["Comparación estricta", "Asignación", "Multiplicación", "Etiqueta HTML"],
+    correcta: 0
+  },
+
+  {
+    pregunta: "¿Qué hace alert()?",
+    codigo: "alert('Bienvenido');",
+    opciones: ["Muestra una ventana emergente", "Crea un botón", "Guarda datos", "Hace un ciclo"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es una función?",
+    codigo: "function iniciar(){ ... }",
+    opciones: ["Bloque reutilizable de código", "Una imagen", "Un error", "Un archivo CSS"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Cuál es una forma correcta de declarar función?",
+    codigo: "Elige la opción válida",
+    opciones: ["function saludar() {}", "func saludar[]", "saludar=function()", "new function:saludar"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace return?",
+    codigo: "function suma(){ return 5 + 3; }",
+    opciones: ["Devuelve un resultado", "Borra código", "Cambia color", "Cierra la página"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué estructura guarda varios datos?",
+    codigo: "let frutas = ['manzana','pera'];",
+    opciones: ["Array", "Boolean", "Number", "Alert"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué posición tiene el primer elemento de un array?",
+    codigo: "let a = ['x','y','z'];",
+    opciones: ["0", "1", "2", "Depende del color"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace .length?",
+    codigo: "['a','b','c'].length",
+    opciones: ["Cuenta elementos", "Borra datos", "Cambia colores", "Abre archivo"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace push() en un array?",
+    codigo: "lista.push('nuevo');",
+    opciones: ["Agrega un elemento", "Elimina todo", "Ordena pantalla", "Cierra el navegador"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace pop() en un array?",
+    codigo: "lista.pop();",
+    opciones: ["Quita el último elemento", "Agrega 10", "Imprime pantalla", "Crea CSS"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Cuál es un comentario válido en JavaScript?",
+    codigo: "Comentario de una línea",
+    opciones: ["// comentario", "<!-- comentario -->", "# comentario", "** comentario"],
+    correcta: 0
+  },
+
+  {
+    pregunta: "¿Qué hace document.getElementById()?",
+    codigo: "document.getElementById('score')",
+    opciones: ["Busca un elemento por ID", "Crea internet", "Elimina HTML", "Abre GitHub"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué cambia innerText?",
+    codigo: "elemento.innerText = 'Hola';",
+    opciones: ["Texto visible", "Velocidad CPU", "Tamaño del disco", "Contraseña"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué evento detecta un clic?",
+    codigo: "<button onclick='jugar()'>",
+    opciones: ["onclick", "onpower", "onwifi", "onram"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace localStorage?",
+    codigo: "localStorage.setItem('puntos',100);",
+    opciones: ["Guarda datos en el navegador", "Acelera la PC", "Cambia la GPU", "Borra el sistema"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace parseInt()?",
+    codigo: "parseInt('100')",
+    opciones: ["Convierte texto a número entero", "Convierte imagen", "Borra variables", "Crea botones"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué operador suma?",
+    codigo: "puntos = puntos + 100;",
+    opciones: ["+", "-", "*", "/"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué operador resta?",
+    codigo: "vida = vida - 1;",
+    opciones: ["-", "+", "%", "="],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué operador multiplica?",
+    codigo: "daño = fuerza * 2;",
+    opciones: ["*", "+", "==", "!"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué operador divide?",
+    codigo: "mitad = total / 2;",
+    opciones: ["/", "*", "+", "==="],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa !=?",
+    codigo: "vida != 0",
+    opciones: ["Diferente", "Igual estricto", "Asignación", "Comentario"],
+    correcta: 0
+  },
+
+  {
+    pregunta: "¿Qué etiqueta carga JavaScript dentro de HTML?",
+    codigo: "Código JS dentro de una página",
+    opciones: ["<script>", "<style>", "<body>", "<title>"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué etiqueta define estilos CSS?",
+    codigo: "CSS dentro de HTML",
+    opciones: ["<style>", "<script>", "<button>", "<h1>"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué etiqueta crea un botón?",
+    codigo: "Elemento interactivo",
+    opciones: ["<button>", "<meta>", "<head>", "<title>"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué etiqueta crea un título grande?",
+    codigo: "Título principal",
+    opciones: ["<h1>", "<p>", "<script>", "<br>"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué etiqueta crea un párrafo?",
+    codigo: "Texto normal",
+    opciones: ["<p>", "<h1>", "<button>", "<html>"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa CSS?",
+    codigo: "Lenguaje de estilos",
+    opciones: ["Cascading Style Sheets", "Code System Script", "Computer Server Style", "Control Software Source"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa HTML?",
+    codigo: "Estructura de una página web",
+    opciones: ["HyperText Markup Language", "High Tech Machine Logic", "Home Tool Main Line", "Hyper Terminal Mode"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace JavaScript en una web?",
+    codigo: "Interactividad del sitio",
+    opciones: ["Da lógica e interacción", "Solo pinta colores", "Solo guarda imágenes", "Enfría la PC"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué archivo suele ser la página principal?",
+    codigo: "Archivo inicial de una web",
+    opciones: ["index.html", "inicio.exe", "main.png", "style.txt"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué extensión usa JavaScript?",
+    codigo: "Archivo de JavaScript",
+    opciones: [".js", ".html", ".css", ".png"],
+    correcta: 0
+  },
+
+  {
+    pregunta: "¿Qué extensión usa CSS?",
+    codigo: "Archivo de estilos",
+    opciones: [".css", ".js", ".exe", ".mp3"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué extensión usa HTML?",
+    codigo: "Archivo web",
+    opciones: [".html", ".jpg", ".css", ".zip"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace setTimeout()?",
+    codigo: "setTimeout(funcion, 1000);",
+    opciones: ["Ejecuta algo después de un tiempo", "Guarda puntos", "Borra HTML", "Cambia monitor"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace Math.random()?",
+    codigo: "Math.random()",
+    opciones: ["Genera número aleatorio", "Suma puntos", "Cierra pestaña", "Crea botones"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué método puede mezclar preguntas si se combina con sort?",
+    codigo: "array.sort(() => Math.random() - 0.5)",
+    opciones: ["sort()", "alert()", "body()", "head()"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace disabled en un botón?",
+    codigo: "boton.disabled = true;",
+    opciones: ["Desactiva el botón", "Lo hace más grande", "Lo pinta rojo siempre", "Lo borra del archivo"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es un bug?",
+    codigo: "Error en un programa",
+    opciones: ["Falla o error de código", "Una imagen", "Un botón", "Un cable"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es depurar/debuggear?",
+    codigo: "Buscar y corregir errores",
+    opciones: ["Corregir fallas del código", "Comprar hardware", "Cambiar fondo", "Apagar la PC"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es un algoritmo?",
+    codigo: "Pasos para resolver un problema",
+    opciones: ["Secuencia de instrucciones", "Monitor viejo", "Cable de red", "Fondo de pantalla"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué es la lógica de programación?",
+    codigo: "Pensar pasos para que el programa funcione",
+    opciones: ["Forma de resolver problemas con código", "Solo memorizar teclas", "Solo diseño", "Solo hardware"],
+    correcta: 0
   }
 ];
 
-function cargarReto(){
-  if(nivel >= retos.length){
-    document.getElementById("pregunta").innerText = "🏆 Misión completada";
-    document.getElementById("codigo").innerText = "Terminaste todos los retos de programación.";
-    document.getElementById("op1").style.display = "none";
-    document.getElementById("op2").style.display = "none";
-    document.getElementById("op3").style.display = "none";
-    document.getElementById("resultado").innerText = "Excelente trabajo 🚀";
+function mezclar(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function iniciarJuego() {
+  preguntasPartida = mezclar([...bancoPreguntas]).slice(0, totalPreguntas);
+  preguntaActual = 0;
+  chances = 2;
+
+  document.getElementById("juego").style.display = "grid";
+  document.getElementById("final").style.display = "none";
+
+  cargarPregunta();
+}
+
+function cargarPregunta() {
+  if (preguntaActual >= totalPreguntas) {
+    terminarJuego(true);
     return;
   }
 
-  let reto = retos[nivel];
+  let p = preguntasPartida[preguntaActual];
 
-  document.getElementById("pregunta").innerText = reto.pregunta;
-  document.getElementById("codigo").innerText = reto.codigo;
-  document.getElementById("op1").innerText = reto.opciones[0];
-  document.getElementById("op2").innerText = reto.opciones[1];
-  document.getElementById("op3").innerText = reto.opciones[2];
-  document.getElementById("resultado").innerText = "";
+  document.getElementById("pregunta").innerText = p.pregunta;
+  document.getElementById("codigo").innerText = p.codigo;
+  document.getElementById("contador").innerText = "Pregunta: " + (preguntaActual + 1) + "/" + totalPreguntas;
+  document.getElementById("vidas").innerText = "Chances: " + chances;
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+  document.getElementById("progreso").style.width = ((preguntaActual) / totalPreguntas * 100) + "%";
+  document.getElementById("mensaje").innerText = "";
+
+  let opcionesMezcladas = p.opciones.map((texto, index) => {
+    return { texto: texto, esCorrecta: index === p.correcta };
+  });
+
+  opcionesMezcladas = mezclar(opcionesMezcladas);
+
+  for (let i = 0; i < 4; i++) {
+    let boton = document.getElementById("op" + i);
+    boton.innerText = opcionesMezcladas[i].texto;
+    boton.dataset.correcta = opcionesMezcladas[i].esCorrecta;
+    boton.disabled = false;
+    boton.className = "";
+  }
 }
 
-function responder(opcion){
-  if(opcion === retos[nivel].correcta){
+function responder(num) {
+  let boton = document.getElementById("op" + num);
+  let esCorrecta = boton.dataset.correcta === "true";
+
+  desactivarBotones();
+
+  if (esCorrecta) {
     puntos += 100;
-    document.getElementById("resultado").innerText = "✅ Correcto +100 puntos";
-    nivel++;
+    boton.classList.add("correcta");
+    document.getElementById("mensaje").innerText = "✅ Correcto: +100 puntos";
+    preguntaActual++;
   } else {
-    puntos -= 25;
-    document.getElementById("resultado").innerText = "❌ Error -25 puntos";
+    chances--;
+    puntos -= 30;
+    boton.classList.add("incorrecta");
+    document.getElementById("mensaje").innerText = "❌ Incorrecto: -30 puntos";
+
+    if (chances <= 0) {
+      localStorage.setItem("puntos", puntos);
+      setTimeout(() => terminarJuego(false), 900);
+      return;
+    } else {
+      preguntaActual++;
+    }
   }
 
   localStorage.setItem("puntos", puntos);
   document.getElementById("score").innerText = "Puntos: " + puntos;
+  document.getElementById("vidas").innerText = "Chances: " + chances;
+  document.getElementById("progreso").style.width = ((preguntaActual) / totalPreguntas * 100) + "%";
 
-  setTimeout(cargarReto, 900);
+  setTimeout(cargarPregunta, 1000);
 }
 
-cargarReto();
+function desactivarBotones() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById("op" + i).disabled = true;
+  }
+}
+
+function terminarJuego(completado) {
+  document.getElementById("juego").style.display = "none";
+  document.getElementById("final").style.display = "block";
+  document.getElementById("progreso").style.width = "100%";
+
+  if (completado) {
+    document.getElementById("tituloFinal").innerText = "🏆 Código estabilizado";
+    document.getElementById("textoFinal").innerText = "Terminaste los 5 retos de programación. Puntaje actual: " + puntos;
+  } else {
+    document.getElementById("tituloFinal").innerText = "💥 Sistema bloqueado";
+    document.getElementById("textoFinal").innerText = "Te quedaste sin chances. Puntaje actual: " + puntos;
+  }
+}
+
+function reiniciar() {
+  iniciarJuego();
+}
+
+iniciarJuego();
+</script>
+
+</body>
+</html>
 </script>
 
 </body>
