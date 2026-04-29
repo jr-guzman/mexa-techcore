@@ -51,15 +51,18 @@ button:hover {
 <button onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
 
 <script>
-let puntos = 0;
+let puntos = localStorage.getItem("puntos") || 0;
+document.getElementById("score").innerText = "Puntos: " + puntos;
 
 function correcto(){
-  puntos += 100;
+  puntos = parseInt(puntos) + 100;
+  localStorage.setItem("puntos", puntos);
   document.getElementById("score").innerText = "Puntos: " + puntos;
 }
 
 function error(){
-  puntos -= 20;
+  puntos = parseInt(puntos) - 20;
+  localStorage.setItem("puntos", puntos);
   document.getElementById("score").innerText = "Puntos: " + puntos;
 }
 </script>
