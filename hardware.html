@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Misión Hardware</title>
+
+<style>
+body {
+  background: #050505;
+  color: #00f7ff;
+  font-family: Arial;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 50px;
+  font-size: 38px;
+}
+
+button {
+  margin: 12px;
+  padding: 15px 25px;
+  background: black;
+  color: #00f7ff;
+  border: 2px solid #00f7ff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #00f7ff;
+  color: black;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🔧 MISIÓN HARDWARE</h1>
+
+<h2 id="score">Puntos: 0</h2>
+
+<p>Selecciona el componente clave para mejorar el rendimiento gráfico de una PC:</p>
+
+<button onclick="correcto()">Tarjeta gráfica GPU</button>
+<button onclick="error()">Fuente genérica</button>
+<button onclick="error()">Mouse RGB</button>
+
+<br><br>
+
+<button onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+
+<script>
+let puntos = 0;
+
+function correcto(){
+  puntos += 100;
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+}
+
+function error(){
+  puntos -= 20;
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+}
+</script>
+
+</body>
+</html>
