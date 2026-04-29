@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Zona de Puzzles | Mexa TechCore</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top,#102b3a 0%,#050607 45%,#000 100%);
+  color:white;
+  font-family:Arial,sans-serif;
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,234,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,234,255,.06) 1px,transparent 1px);
+  background-size:40px 40px;
+  animation:grid 18s linear infinite;
+  pointer-events:none;
+}
+
+@keyframes grid{
+  from{background-position:0 0}
+  to{background-position:80px 80px}
+}
+
+.contenedor{
+  width:92%;
+  max-width:1050px;
+  margin:35px auto;
+  padding:30px;
+  border:1px solid #00eaff;
+  border-radius:24px;
+  background:rgba(0,12,20,.88);
+  box-shadow:0 0 35px rgba(0,234,255,.3);
+  position:relative;
+}
+
+.header{
+  text-align:center;
+  border-bottom:1px solid rgba(0,234,255,.4);
+  padding-bottom:20px;
+}
+
+h1{
+  margin:0;
+  font-size:42px;
+  color:#00eaff;
+  text-shadow:0 0 18px #00eaff;
+}
+
+.sub{
+  color:#bafaff;
+}
+
+.panel{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin:25px 0;
+}
+
+.caja{
+  padding:15px;
+  border:1px solid #00eaff;
+  border-radius:14px;
+  background:rgba(0,234,255,.07);
+  text-align:center;
+  font-weight:bold;
+}
+
+.barra{
+  height:16px;
+  border:1px solid #00eaff;
+  border-radius:999px;
+  overflow:hidden;
+  background:#050505;
+  margin-bottom:25px;
+}
+
+.progreso{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00eaff,#00ff99);
+  transition:.3s;
+}
+
+.puzzle{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:25px;
+}
+
+.visual{
+  min-height:300px;
+  border:1px solid #00eaff88;
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+  display:grid;
+  place-items:center;
+  padding:25px;
+  text-align:center;
+}
+
+.visualBox{
+  font-size:38px;
+  line-height:1.5;
+  color:#00ffcc;
+  text-shadow:0 0 12px #00eaff;
+}
+
+.tarjeta{
+  border:1px solid #00eaff88;
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+  padding:25px;
+}
+
+.tipo{
+  color:#00ff99;
+  font-size:14px;
+  letter-spacing:2px;
+}
+
+.pregunta{
+  font-size:24px;
+  margin:18px 0;
+}
+
+.opciones{
+  display:grid;
+  gap:14px;
+}
+
+button{
+  padding:16px;
+  background:#04080c;
+  color:#00eaff;
+  border:1px solid #00eaff;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:16px;
+  transition:.2s;
+}
+
+button:hover{
+  background:#00eaff;
+  color:black;
+  transform:translateY(-2px);
+  box-shadow:0 0 18px #00eaff88;
+}
+
+.correcta{
+  background:#00ff99!important;
+  color:black!important;
+  border-color:#00ff99!important;
+}
+
+.incorrecta{
+  background:#ff244f!important;
+  color:white!important;
+  border-color:#ff244f!important;
+}
+
+.mensaje{
+  min-height:35px;
+  margin-top:18px;
+  font-weight:bold;
+  color:#ffdf7e;
+}
+
+.final{
+  display:none;
+  text-align:center;
+  border:1px solid #00eaff;
+  border-radius:18px;
+  padding:30px;
+  background:rgba(255,255,255,.05);
+}
+
+.acciones{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin-top:25px;
+  flex-wrap:wrap;
+}
+
+.volver{
+  border-color:white;
+  color:white;
+}
+
+.volver:hover{
+  background:white;
+  color:black;
+}
+
+@media(max-width:850px){
+  .puzzle{grid-template-columns:1fr}
+  .panel{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+  <div class="header">
+    <h1>🧩 ZONA DE PUZZLES</h1>
+    <p class="sub">Centro de entrenamiento mental táctico | 5 puzzles aleatorios por intento</p>
+  </div>
+
+  <div class="panel">
+    <div class="caja" id="score">Puntos: 0</div>
+    <div class="caja" id="chances">Chances: 2</div>
+    <div class="caja" id="contador">Puzzle: 1/5</div>
+  </div>
+
+  <div class="barra">
+    <div class="progreso" id="progreso"></div>
+  </div>
+
+  <div class="puzzle" id="juego">
+    <div class="visual">
+      <div class="visualBox" id="visual"></div>
+    </div>
+
+    <div class="tarjeta">
+      <div class="tipo" id="tipo"></div>
+      <div class="pregunta" id="pregunta"></div>
+
+      <div class="opciones">
+        <button id="op0" onclick="responder(0)"></button>
+        <button id="op1" onclick="responder(1)"></button>
+        <button id="op2" onclick="responder(2)"></button>
+        <button id="op3" onclick="responder(3)"></button>
+      </div>
+
+      <div class="mensaje" id="mensaje"></div>
+    </div>
+  </div>
+
+  <div class="final" id="final">
+    <h2 id="tituloFinal"></h2>
+    <p id="textoFinal"></p>
+
+    <div class="acciones">
+      <button onclick="reiniciar()">🔁 Nuevo intento</button>
+      <button class="volver" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+    </div>
+  </div>
+
+  <div class="acciones">
+    <button class="volver" onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+  </div>
+
+</div>
+
+<script>
+let puntos = 0;
+let chances = 2;
+let actual = 0;
+let total = 5;
+let partida = [];
+
+const bancoPuzzles = [
+  {
+    tipo:"SECUENCIA NUMÉRICA",
+    visual:"2 → 4 → 8 → 16 → ?",
+    pregunta:"¿Qué número sigue?",
+    opciones:["24","32","30","28"],
+    correcta:1
+  },
+  {
+    tipo:"SECUENCIA NUMÉRICA",
+    visual:"3 → 6 → 12 → 24 → ?",
+    pregunta:"Detecta el patrón.",
+    opciones:["36","42","48","50"],
+    correcta:2
+  },
+  {
+    tipo:"SECUENCIA NUMÉRICA",
+    visual:"1 → 4 → 9 → 16 → ?",
+    pregunta:"¿Qué número completa la serie?",
+    opciones:["20","25","30","36"],
+    correcta:1
+  },
+  {
+    tipo:"SECUENCIA NUMÉRICA",
+    visual:"100 → 90 → 80 → 70 → ?",
+    pregunta:"¿Qué sigue?",
+    opciones:["65","50","60","55"],
+    correcta:2
+  },
+  {
+    tipo:"SECUENCIA NUMÉRICA",
+    visual:"5 → 10 → 20 → 40 → ?",
+    pregunta:"Selecciona la respuesta correcta.",
+    opciones:["60","70","80","90"],
+    correcta:2
+  },
+
+  {
+    tipo:"PATRÓN VISUAL",
+    visual:"▲ ● ▲ ● ▲ ?",
+    pregunta:"¿Qué símbolo sigue?",
+    opciones:["▲","●","■","◆"],
+    correcta:1
+  },
+  {
+    tipo:"PATRÓN VISUAL",
+    visual:"🔴 🔵 🔴 🔵 🔴 ?",
+    pregunta:"Completa el patrón.",
+    opciones:["🔴","🔵","🟢","⚫"],
+    correcta:1
+  },
+  {
+    tipo:"PATRÓN VISUAL",
+    visual:"⬛ ⬜ ⬛ ⬜ ⬛ ?",
+    pregunta:"¿Cuál sigue?",
+    opciones:["⬛","⬜","🟥","🟦"],
+    correcta:1
+  },
+  {
+    tipo:"PATRÓN VISUAL",
+    visual:"A B A B A ?",
+    pregunta:"Elige el elemento faltante.",
+    opciones:["A","B","C","D"],
+    correcta:1
+  },
+  {
+    tipo:"PATRÓN VISUAL",
+    visual:"⚙️ 💻 ⚙️ 💻 ⚙️ ?",
+    pregunta:"¿Qué sigue en la secuencia?",
+    opciones:["🧠","💻","⚙️","🔐"],
+    correcta:1
+  },
+
+  {
+    tipo:"CÓDIGO SECRETO",
+    visual:"A = 1<br>B = 2<br>C = ?",
+    pregunta:"Si A vale 1 y B vale 2, ¿cuánto vale C?",
+    opciones:["2","3","4","5"],
+    correcta:1
+  },
+  {
+    tipo:"CÓDIGO SECRETO",
+    visual:"Z = 26<br>Y = 25<br>X = ?",
+    pregunta:"Descifra el valor de X.",
+    opciones:["23","24","25","22"],
+    correcta:1
+  },
+  {
+    tipo:"CÓDIGO SECRETO",
+    visual:"MEXA = 4 letras<br>TECHCORE = ?",
+    pregunta:"¿Cuántas letras tiene TECHCORE?",
+    opciones:["6","7","8","9"],
+    correcta:2
+  },
+  {
+    tipo:"CÓDIGO SECRETO",
+    visual:"ROJO = 4<br>AZUL = 4<br>VERDE = ?",
+    pregunta:"¿Cuál es el código de VERDE?",
+    opciones:["4","5","6","7"],
+    correcta:1
+  },
+  {
+    tipo:"CÓDIGO SECRETO",
+    visual:"SOL = 3<br>LUNA = 4<br>ESTRELLA = ?",
+    pregunta:"Calcula el código.",
+    opciones:["6","7","8","9"],
+    correcta:2
+  },
+
+  {
+    tipo:"SOPA MENTAL",
+    visual:"C O D E<br>A R A M<br>T E C H<br>L O G I",
+    pregunta:"¿Qué palabra tecnológica aparece?",
+    opciones:["CODE","CASA","PERRO","MESA"],
+    correcta:0
+  },
+  {
+    tipo:"SOPA MENTAL",
+    visual:"R A M X<br>O T E C<br>M O U S<br>G P U A",
+    pregunta:"Encuentra el componente oculto.",
+    opciones:["RAM","CPU","SSD","BIOS"],
+    correcta:0
+  },
+  {
+    tipo:"SOPA MENTAL",
+    visual:"B I O S<br>X A R T<br>C P U Z<br>L O G A",
+    pregunta:"¿Qué palabra aparece?",
+    opciones:["BIOS","HTML","JAVA","CABLE"],
+    correcta:0
+  },
+  {
+    tipo:"SOPA MENTAL",
+    visual:"S S D A<br>T E C H<br>R A M X<br>G P U Z",
+    pregunta:"¿Cuál palabra NO aparece?",
+    opciones:["SSD","RAM","GPU","MOUSE"],
+    correcta:3
+  },
+  {
+    tipo:"SOPA MENTAL",
+    visual:"L O G I<br>C A X Z<br>D A T A<br>B I T S",
+    pregunta:"¿Qué palabra aparece completa?",
+    opciones:["DATA","MOTOR","CABLE","ROBOT"],
+    correcta:0
+  },
+
+  {
+    tipo:"ROMPECABEZAS LÓGICO",
+    visual:"[1] Encender<br>[2] Iniciar sesión<br>[3] Abrir programa",
+    pregunta:"¿Cuál paso va primero?",
+    opciones:["Abrir programa","Iniciar sesión","Encender","Guardar"],
+    correcta:2
+  },
+  {
+    tipo:"ROMPECABEZAS LÓGICO",
+    visual:"CPU + RAM + SSD + ?",
+    pregunta:"¿Qué falta para alimentar el sistema?",
+    opciones:["Fuente de poder","Mousepad","Silla","Audífonos"],
+    correcta:0
+  },
+  {
+    tipo:"ROMPECABEZAS LÓGICO",
+    visual:"Código → Prueba → Error → ?",
+    pregunta:"¿Qué sigue normalmente?",
+    opciones:["Ignorar","Debuggear","Apagar","Borrar PC"],
+    correcta:1
+  },
+  {
+    tipo:"ROMPECABEZAS LÓGICO",
+    visual:"Entrada → Proceso → ?",
+    pregunta:"Completa el flujo básico.",
+    opciones:["Salida","Ruido","Color","Cable"],
+    correcta:0
+  },
+  {
+    tipo:"ROMPECABEZAS LÓGICO",
+    visual:"Problema → Análisis → Solución → ?",
+    pregunta:"¿Qué sigue para comprobar?",
+    opciones:["Prueba","Olvido","Ruido","Decoración"],
+    correcta:0
+  },
+
+  {
+    tipo:"RETO DE MEMORIA",
+    visual:"🔐 7 - 2 - 9",
+    pregunta:"¿Cuál era el código mostrado?",
+    opciones:["729","792","279","927"],
+    correcta:0
+  },
+  {
+    tipo:"RETO DE MEMORIA",
+    visual:"🛰️ A - 4 - Z",
+    pregunta:"Selecciona el código correcto.",
+    opciones:["A4Z","AZ4","4AZ","ZA4"],
+    correcta:0
+  },
+  {
+    tipo:"RETO DE MEMORIA",
+    visual:"⚡ R - 8 - M",
+    pregunta:"¿Qué código viste?",
+    opciones:["R8M","M8R","8RM","RM8"],
+    correcta:0
+  },
+  {
+    tipo:"RETO DE MEMORIA",
+    visual:"🧠 X - 3 - Q",
+    pregunta:"Marca el código correcto.",
+    opciones:["X3Q","Q3X","3XQ","XQ3"],
+    correcta:0
+  },
+  {
+    tipo:"RETO DE MEMORIA",
+    visual:"🛠️ T - 5 - K",
+    pregunta:"¿Cuál coincide?",
+    opciones:["T5K","K5T","5TK","TK5"],
+    correcta:0
+  }
+];
+
+function mezclar(array){
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function iniciar(){
+  puntos = 0;
+  chances = 2;
+  actual = 0;
+  partida = mezclar([...bancoPuzzles]).slice(0,total);
+
+  document.getElementById("juego").style.display = "grid";
+  document.getElementById("final").style.display = "none";
+
+  cargar();
+}
+
+function cargar(){
+  if(actual >= total){
+    terminar(true);
+    return;
+  }
+
+  let p = partida[actual];
+
+  document.getElementById("tipo").innerText = p.tipo;
+  document.getElementById("visual").innerHTML = p.visual;
+  document.getElementById("pregunta").innerText = p.pregunta;
+  document.getElementById("contador").innerText = "Puzzle: " + (actual + 1) + "/" + total;
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+  document.getElementById("chances").innerText = "Chances: " + chances;
+  document.getElementById("progreso").style.width = ((actual / total) * 100) + "%";
+  document.getElementById("mensaje").innerText = "";
+
+  let opciones = p.opciones.map((texto,index)=>{
+    return {texto:texto, correcta:index === p.correcta};
+  });
+
+  opciones = mezclar(opciones);
+
+  for(let i=0;i<4;i++){
+    let btn = document.getElementById("op"+i);
+    btn.innerText = opciones[i].texto;
+    btn.dataset.correcta = opciones[i].correcta;
+    btn.disabled = false;
+    btn.className = "";
+  }
+}
+
+function responder(i){
+  let btn = document.getElementById("op"+i);
+  let ok = btn.dataset.correcta === "true";
+
+  for(let n=0;n<4;n++){
+    document.getElementById("op"+n).disabled = true;
+  }
+
+  if(ok){
+    puntos += 100;
+    btn.classList.add("correcta");
+    document.getElementById("mensaje").innerText = "✅ Correcto +100";
+  }else{
+    puntos -= 25;
+    chances--;
+    btn.classList.add("incorrecta");
+    document.getElementById("mensaje").innerText = "❌ Error -25";
+  }
+
+  actual++;
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+  document.getElementById("chances").innerText = "Chances: " + chances;
+  document.getElementById("progreso").style.width = ((actual / total) * 100) + "%";
+
+  if(chances <= 0){
+    setTimeout(()=>terminar(false),900);
+    return;
+  }
+
+  setTimeout(cargar,900);
+}
+
+function terminar(completo){
+  document.getElementById("juego").style.display = "none";
+  document.getElementById("final").style.display = "block";
+  document.getElementById("progreso").style.width = "100%";
+
+  localStorage.setItem("logicaScore", puntos);
+
+  if(completo){
+    document.getElementById("tituloFinal").innerText = "🏆 Zona completada";
+    document.getElementById("textoFinal").innerText =
+      "Terminaste los 5 puzzles. Puntaje obtenido: " + puntos;
+  }else{
+    document.getElementById("tituloFinal").innerText = "💥 Entrenamiento fallido";
+    document.getElementById("textoFinal").innerText =
+      "Te quedaste sin chances. Puntaje obtenido: " + puntos;
+  }
+}
+
+function reiniciar(){
+  iniciar();
+}
+
+iniciar();
+</script>
+
+</body>
+</html>
