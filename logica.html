@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Lógica Arena</title>
+
+<style>
+body {
+  margin: 0;
+  background: linear-gradient(135deg,#0a0020,#000,#1a0033);
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+.contenedor {
+  width: 90%;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 25px;
+  border: 1px solid #a855f7;
+  border-radius: 18px;
+  box-shadow: 0 0 25px #a855f766;
+}
+
+h1 {
+  color: #a855f7;
+  font-size: 40px;
+}
+
+.panel {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.caja {
+  border: 1px solid #a855f7;
+  padding: 10px 20px;
+  border-radius: 10px;
+}
+
+.barra {
+  height: 12px;
+  background: #111;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progreso {
+  height: 100%;
+  background: linear-gradient(90deg,#a855f7,#00eaff);
+}
+
+.tarjeta {
+  margin-top: 30px;
+}
+
+button {
+  margin: 10px;
+  padding: 14px 20px;
+  background: black;
+  border: 1px solid #a855f7;
+  color: #a855f7;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+button:hover {
+  background: #a855f7;
+  color: black;
+}
+</style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+<h1>🧠 LÓGICA ARENA</h1>
+
+<div class="panel">
+  <div class="caja" id="score">Puntos: 0</div>
+  <div class="caja" id="vidas">Chances: 2</div>
+  <div class="caja" id="contador">1/5</div>
+</div>
+
+<div class="barra">
+  <div class="progreso" id="progreso"></div>
+</div>
+
+<div class="tarjeta">
+  <h2 id="pregunta"></h2>
+
+  <div>
+    <button onclick="responder(0)" id="op0"></button>
+    <button onclick="responder(1)" id="op1"></button>
+    <button onclick="responder(2)" id="op2"></button>
+    <button onclick="responder(3)" id="op3"></button>
+  </div>
+
+  <h3 id="mensaje"></h3>
+</div>
+
+<button onclick="window.location.href='index.html'">⬅ Volver</button>
+
+</div>
+
+<script>
+
+let puntos = 0;
+let chances = 2;
+let actual = 0;
+let total = 5;
+
+let preguntas = [
+  {p:"¿Cuál sigue? 2,4,6,8...",o:["10","12","9","11"],c:0},
+  {p:"Si todos los gatos son mamíferos ¿qué es un gato?",o:["Mamífero","Reptil","Ave","Planta"],c:0},
+  {p:"Completa: A,B,C,_",o:["D","E","Z","1"],c:0},
+  {p:"Si 5x=10, x es:",o:["2","5","10","0"],c:0},
+  {p:"¿Cuál pesa más?",o:["1kg plumas","1kg hierro","Igual","Depende"],c:2},
+
+  {p:"Si hoy es lunes, en 3 días será:",o:["Jueves","Viernes","Miércoles","Martes"],c:0},
+  {p:"¿Qué número falta? 1,1,2,3,5,_",o:["8","6","7","9"],c:0},
+  {p:"¿Qué patrón sigue? 🔴🔵🔴🔵...",o:["🔴","🔵","⚫","⚪"],c:0},
+  {p:"Si A=1, B=2 ¿C?",o:["3","4","5","6"],c:0},
+  {p:"¿Qué no pertenece?",o:["Perro","Gato","Auto","Vaca"],c:2},
+
+  {p:"¿Cuál es mayor?",o:["0.5","0.05","0.005","0.0005"],c:0},
+  {p:"¿Qué sigue? 3,6,9,12...",o:["15","14","16","18"],c:0},
+  {p:"Si 10-3=7, 7-2=?",o:["5","4","3","6"],c:0},
+  {p:"Completa: 1,4,9,16,_",o:["25","20","18","24"],c:0},
+  {p:"¿Qué figura sigue? ▲▲■■▲▲■■",o:["▲▲","■■","▲■","■■▲"],c:0},
+
+  {p:"Si tienes 3 manzanas y comes 1 ¿cuántas quedan?",o:["2","1","3","0"],c:0},
+  {p:"¿Qué número es par?",o:["3","7","10","5"],c:2},
+  {p:"¿Qué sigue? 100,90,80,_",o:["70","60","75","85"],c:0},
+  {p:"¿Qué es lógico?",o:["Fuego frío","Agua seca","Sol caliente","Hielo caliente"],c:2},
+  {p:"¿Qué no encaja?",o:["Triángulo","Cuadrado","Círculo","Perro"],c:3},
+
+  // puedes seguir agregando hasta 50 igual formato
+];
+
+function mezclar(arr){
+  return arr.sort(()=>Math.random()-0.5);
+}
+
+let partida = mezclar([...preguntas]).slice(0,total);
+
+function cargar(){
+  if(actual>=total){
+    document.getElementById("pregunta").innerText="Finalizado";
+    return;
+  }
+
+  let p=partida[actual];
+
+  document.getElementById("pregunta").innerText=p.p;
+  document.getElementById("contador").innerText=(actual+1)+"/5";
+  document.getElementById("progreso").style.width=(actual/total*100)+"%";
+
+  for(let i=0;i<4;i++){
+    document.getElementById("op"+i).innerText=p.o[i];
+  }
+}
+
+function responder(i){
+  let p=partida[actual];
+
+  if(i===p.c){
+    puntos+=100;
+    document.getElementById("mensaje").innerText="Correcto +100";
+  }else{
+    puntos-=25;
+    chances--;
+    document.getElementById("mensaje").innerText="Error -25";
+  }
+
+  actual++;
+
+  document.getElementById("score").innerText="Puntos: "+puntos;
+  document.getElementById("vidas").innerText="Chances: "+chances;
+
+  if(chances<=0){
+    document.getElementById("pregunta").innerText="Sin vidas";
+    return;
+  }
+
+  setTimeout(cargar,800);
+}
+
+cargar();
+
+</script>
+
+</body>
+</html>
