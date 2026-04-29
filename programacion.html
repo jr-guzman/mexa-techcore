@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Misión Programación</title>
+
+<style>
+body {
+  background: #050505;
+  color: #00f7ff;
+  font-family: Arial;
+  text-align: center;
+}
+
+.card {
+  border: 2px solid #00f7ff;
+  width: 70%;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+button {
+  margin: 12px;
+  padding: 15px 25px;
+  background: black;
+  color: #00f7ff;
+  border: 2px solid #00f7ff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #00f7ff;
+  color: black;
+}
+
+.codigo {
+  background: #111;
+  padding: 15px;
+  border-radius: 8px;
+  color: #00ff99;
+  font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>💻 MISIÓN PROGRAMACIÓN</h1>
+<h2 id="score">Puntos: 0</h2>
+
+<div class="card">
+  <h2 id="pregunta">Pregunta</h2>
+  <div class="codigo" id="codigo"></div>
+
+  <br>
+
+  <button id="op1" onclick="responder(0)">Opción 1</button>
+  <button id="op2" onclick="responder(1)">Opción 2</button>
+  <button id="op3" onclick="responder(2)">Opción 3</button>
+
+  <h3 id="resultado"></h3>
+</div>
+
+<button onclick="window.location.href='index.html'">⬅ Volver al HUB</button>
+
+<script>
+let puntos = parseInt(localStorage.getItem("puntos")) || 0;
+document.getElementById("score").innerText = "Puntos: " + puntos;
+
+let nivel = 0;
+
+let retos = [
+  {
+    pregunta: "¿Qué hace este código?",
+    codigo: "let x = 5 + 3;",
+    opciones: ["Guarda el número 8", "Muestra una imagen", "Apaga la computadora"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Cuál sirve para repetir algo varias veces?",
+    codigo: "Selecciona la estructura correcta",
+    opciones: ["if", "for", "alert"],
+    correcta: 1
+  },
+  {
+    pregunta: "¿Qué línea muestra un mensaje?",
+    codigo: "Elige la opción correcta",
+    opciones: ["console.log('Hola')", "let hola = 5", "body color red"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué significa una variable?",
+    codigo: "let nombre = 'Alex';",
+    opciones: ["Un dato guardado", "Un botón", "Un error"],
+    correcta: 0
+  },
+  {
+    pregunta: "¿Qué hace un IF?",
+    codigo: "if (vida > 0) { jugar(); }",
+    opciones: ["Repite infinito", "Toma una decisión", "Borra archivos"],
+    correcta: 1
+  }
+];
+
+function cargarReto(){
+  if(nivel >= retos.length){
+    document.getElementById("pregunta").innerText = "🏆 Misión completada";
+    document.getElementById("codigo").innerText = "Terminaste todos los retos de programación.";
+    document.getElementById("op1").style.display = "none";
+    document.getElementById("op2").style.display = "none";
+    document.getElementById("op3").style.display = "none";
+    document.getElementById("resultado").innerText = "Excelente trabajo 🚀";
+    return;
+  }
+
+  let reto = retos[nivel];
+
+  document.getElementById("pregunta").innerText = reto.pregunta;
+  document.getElementById("codigo").innerText = reto.codigo;
+  document.getElementById("op1").innerText = reto.opciones[0];
+  document.getElementById("op2").innerText = reto.opciones[1];
+  document.getElementById("op3").innerText = reto.opciones[2];
+  document.getElementById("resultado").innerText = "";
+}
+
+function responder(opcion){
+  if(opcion === retos[nivel].correcta){
+    puntos += 100;
+    document.getElementById("resultado").innerText = "✅ Correcto +100 puntos";
+    nivel++;
+  } else {
+    puntos -= 25;
+    document.getElementById("resultado").innerText = "❌ Error -25 puntos";
+  }
+
+  localStorage.setItem("puntos", puntos);
+  document.getElementById("score").innerText = "Puntos: " + puntos;
+
+  setTimeout(cargarReto, 900);
+}
+
+cargarReto();
+</script>
+
+</body>
+</html>
