@@ -36,7 +36,9 @@ button:hover {
 </head>
 
 <body>
-
+  
+<h2 id="score">Puntos: 0</h2>
+  
 <h1>🚀 MEXA TECHCORE</h1>
 
 <p>Selecciona un módulo:</p>
@@ -44,6 +46,12 @@ button:hover {
 <button onclick="window.location.href='hardware.html'">Hardware</button>
 <button onclick="alert('Próximamente módulo Programación 💻')">Programación</button>
 <button onclick="alert('Próximamente módulo Lógica 🧠')">Lógica</button>
+
+</body>
+  <script>
+let puntos = localStorage.getItem("puntos") || 0;
+document.getElementById("score").innerText = "Puntos: " + puntos;
+</script>
 
 </body>
 </html>
